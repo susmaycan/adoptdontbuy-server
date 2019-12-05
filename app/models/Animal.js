@@ -24,7 +24,7 @@ const AnimalSchema = mongoose.Schema({
     energyLevel: String, 
     owner: String
 }, {
-    timestamps: true
+    timestamps: true,
 });
 
 module.exports = mongoose.model('Animal', AnimalSchema);

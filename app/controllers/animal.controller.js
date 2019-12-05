@@ -1,5 +1,4 @@
 const Animal = require('../models/Animal.js');
-
 // Create and Save a new animal
 exports.create = (req, res) => {
     // Validate request
@@ -31,6 +30,7 @@ exports.create = (req, res) => {
         socialLevel: req.body.socialLevel || "unknown",
         traumaLevel: req.body.traumaLevel || "unknown",
         energyLevel: req.body.energyLevel || "unknown",
+        owner: req.body.owner || "unknown"
     });
 
     // Save animal in the database
@@ -107,9 +107,10 @@ exports.update = (req, res) => {
         alongWithDogs: req.body.alongWithDogs || "unknown",
         alongWithCats: req.body.alongWithCats || "unknown",
         alongWithKids: req.body.alongWithKids || "unknown",
-        socialLevel: req.body.socialLevel || "unknown",
+        socialLevel: req.body.socialLevel || "unknow",
         traumaLevel: req.body.traumaLevel || "unknown",
         energyLevel: req.body.energyLevel || "unknown",
+        owner: req.body.owner || "unknown"
     }, { new: true })
         .then(animal => {
             if (!animal) {
