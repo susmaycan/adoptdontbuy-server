@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const UserSchema = mongoose.Schema({
     _id: String,
     phone: String,
-    DNI_CIF: String,
     picture: String,
     animal_shetter: Boolean,
     website: String,
@@ -12,10 +11,10 @@ const UserSchema = mongoose.Schema({
     region: String,
     province: String,
     city: String,
-    picture: String,
     description: String,
     first_name: String,
     last_name: String,
+    email: String,
     animals : [String]
 }, {
     timestamps: true,

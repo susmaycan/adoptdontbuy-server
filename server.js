@@ -35,6 +35,7 @@ mongoose.connect(dbConfig.url, {
 
 app.use(cors());
 require('./app/routes/animal.routes.js')(app);
+require('./app/routes/user.routes.js')(app);
 
 // listen for requests
 app.listen(3001, () => {
