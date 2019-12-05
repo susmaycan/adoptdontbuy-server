@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+var cors = require('cors');
 
 // create express app
 const app = express();
@@ -15,7 +16,7 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 })
-    ;
+    
 // Configuring the database
 const dbConfig = require('./config/database.config.js');
 const mongoose = require('mongoose');
@@ -32,7 +33,7 @@ mongoose.connect(dbConfig.url, {
     process.exit();
 });
 
-
+app.use(cors());
 require('./app/routes/animal.routes.js')(app);
 
 // listen for requests

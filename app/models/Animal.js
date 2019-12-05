@@ -4,7 +4,7 @@ const AnimalSchema = mongoose.Schema({
     name: String,
     specie: String,
     breed: String,
-    genre: String,
+    gender: String,
     size: String,
     status: String,
     yearBorn: String,
@@ -22,6 +22,7 @@ const AnimalSchema = mongoose.Schema({
     socialLevel: String,
     traumaLevel: String,
     energyLevel: String, 
+    owner: String
 }, {
     timestamps: true
 });
