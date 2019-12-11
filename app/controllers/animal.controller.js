@@ -43,10 +43,10 @@ exports.create = (req, res) => {
             });
         });
 };
-
+const ORDER_DESC_BY_DATE = -1;
 // Retrieve and return all animals from the database.
 exports.findAll = (req, res) => {
-    Animal.find().sort({ 'updatedAt': -1 }).limit(9)
+    Animal.find().sort({ 'updatedAt': ORDER_DESC_BY_DATE }).limit(9)
         .then(animals => {
             res.send(animals);
         }).catch(err => {
