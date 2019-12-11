@@ -16,7 +16,7 @@ exports.create = (req, res) => {
         size: req.body.size || "unknown",
         status: req.body.status || "unknown",
         yearBorn: req.body.yearBorn || "unknown",
-        country: req.body.country || "unknown",
+        country: req.body.country || "Spain",
         region: req.body.region || "unknown",
         province: req.body.province || "unknown",
         city: req.body.city || "unknown",
