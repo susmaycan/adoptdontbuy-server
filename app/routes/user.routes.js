@@ -10,6 +10,9 @@ module.exports = (app) => {
     // Retrieve a single Note with noteId
     app.get('/user/:userId', users.findOne);
 
+    // Retrieve all animals by user
+    app.get('/user/:userId/animal', users.animalsByUser);
+
     // Update a Note with noteId
     app.put('/user/:userId', users.update);
 

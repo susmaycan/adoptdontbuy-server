@@ -22,7 +22,10 @@ const AnimalSchema = mongoose.Schema({
     socialLevel: String,
     traumaLevel: String,
     energyLevel: String, 
-    owner: String
+    owner: {
+        type: String,
+        ref:'User'
+    }
 }, {
     timestamps: true,
 });
