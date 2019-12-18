@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 const User = require('../models/User.js');
 module.exports = {
     // Create and Save a new animal
-    create: function (req, res) {
+    create: async (req, res) => {
         // Validate request
         if (!req.body.name) {
             return res.status(400).send({
@@ -38,9 +38,9 @@ module.exports = {
         });
 
         // Save animal in the database
-        animal.save()
+        await animal.save()
             .then(data => {
-                User.findById(id)
+                 User.findById(id)
                     .then(user => {
                         if (!user) {
                             return res.status(404).send({
@@ -67,11 +67,13 @@ module.exports = {
                 });
             });
     },
+
+    
     // Retrieve and return all animals from the database.
-    findAll: function (req, res) {
+    findAll: async (req, res) => {
         const ORDER_DESC_BY_DATE = -1;
 
-        Animal.find().sort({ 'updatedAt': ORDER_DESC_BY_DATE }).limit(9)
+        await Animal.find().sort({ 'updatedAt': ORDER_DESC_BY_DATE }).limit(9)
             .then(animals => {
                 res.send(animals);
             }).catch(err => {
@@ -82,8 +84,8 @@ module.exports = {
     },
 
     // Find a single animal with a animalId
-    findOne: function (req, res) {
-        Animal.findById(req.params.animalId)
+    findOne: async (req, res) => {
+        await Animal.findById(req.params.animalId).populate('owner')
             .then(animal => {
                 if (!animal) {
                     return res.status(404).send({
@@ -104,7 +106,7 @@ module.exports = {
     },
 
     // Update a animal identified by the animalId in the request
-    update: function (req, res) {
+    update: async (req, res) => {
         // Validate Request
         if (!req.body.name) {
             return res.status(400).send({
@@ -113,7 +115,7 @@ module.exports = {
         }
 
         // Find animal and update it with the request body
-        Animal.findByIdAndUpdate(req.params.animalId, {
+        await Animal.findByIdAndUpdate(req.params.animalId, {
             name: req.body.name,
             specie: req.body.specie || "unknown",
             breed: req.body.breed || "unknown",
@@ -157,48 +159,28 @@ module.exports = {
     },
 
     // Delete a animal with the specified animalId in the request
-    delete: function (req, res) {
+    delete: async (req, res) => {
+        var id = req.params.animalId;
 
-
-        Animal.findByIdAndRemove(req.params.animalId)
+        await Animal.findByIdAndDelete(id)
             .then(animal => {
                 console.log(animal);
                 if (!animal) {
                     return res.status(404).send({
-                        message: "Animal not found with id " + req.params.animalId
+                        message: "Animal not found with id " + id
                     });
                 }
                 res.send({ message: "Animal deleted successfully!" });
 
-                // User.findById(animal.owner)
-                //     .then(user => {
-                //         if (!user) {
-                //             return res.status(404).send({
-                //                 message: "User not found with id " + animal.owner
-                //             });
-                //         }
-                //         console.log(user);
-                //         user.animals.splice(user.animals.indexOf(req.params.animalId), 1);
-                //         user.save();
-                //     }).catch(err => {
-                //         console.log(err.message);
-                //         if (err.kind === 'ObjectId') {
-                //             return res.status(404).send({
-                //                 message: "Error 404 - User not found with id " +animal.owner
-                //             });
-                //         }
-                //         return res.status(500).send({
-                //             message: "Error retrieving user with id " + animal.owner
-                //         });
-                //     });
             }).catch(err => {
                 if (err.kind === 'ObjectId' || err.name === 'NotFound') {
                     return res.status(404).send({
-                        message: "Animal not found with id " + req.params.animalId
+                        message: "Animal not found with id " + id
                     });
                 }
+                console.log("Error in delete animal ", err.message);
                 return res.status(500).send({
-                    message: "Could not delete animal with id " + req.params.animalId
+                    message: "Could not delete animal with id " + id
                 });
             });
     }
