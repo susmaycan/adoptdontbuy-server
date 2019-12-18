@@ -26,7 +26,10 @@ module.exports = {
             description: req.body.description || "unknown",
             first_name: req.body.first_name || "unknown",
             last_name: req.body.last_name || "unknown",
-            animals: req.body.animals || []
+            animals: req.body.animals || [],
+            likedAnimals: req.body.likedAnimals || [],
+            adopted: req.body.adopted || [],
+            reserved: req.body.reserved || []
         });
 
         await user.save()
@@ -120,7 +123,9 @@ module.exports = {
             description: req.body.description || "unknown",
             first_name: req.body.first_name || "unknown",
             last_name: req.body.last_name || "unknown",
-            animals: req.body.animals || ["unknown"]
+            animals: req.body.animals || ["unknown"],     likedAnimals: req.body.likedAnimals || [],
+            adopted: req.body.adopted || [],
+            reserved: req.body.reserved || []
         }, { new: true })
             .then(user => {
                 if (!user) {

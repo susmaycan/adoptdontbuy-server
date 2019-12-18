@@ -17,7 +17,16 @@ const UserSchema = mongoose.Schema({
     email: String,
     animals : [
         {type: mongoose.Schema.Types.ObjectId,ref:'Animal'}
-    ]
+    ],
+    likedAnimals : [
+        {type: mongoose.Schema.Types.ObjectId,ref:'Animal'}
+    ],
+    adopted : [
+        {type: mongoose.Schema.Types.ObjectId,ref:'Animal'}
+    ],
+    reserved: [
+        {type: mongoose.Schema.Types.ObjectId,ref:'Animal'}
+    ], 
 }, {
     timestamps: true,
     _id: false

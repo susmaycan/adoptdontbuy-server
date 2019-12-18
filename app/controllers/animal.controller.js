@@ -34,13 +34,14 @@ module.exports = {
             socialLevel: req.body.socialLevel || "unknown",
             traumaLevel: req.body.traumaLevel || "unknown",
             energyLevel: req.body.energyLevel || "unknown",
-            owner: id || "unknown"
+            owner: id || "unknown",
+            status: req.body.status || "00"
         });
 
         // Save animal in the database
         await animal.save()
             .then(data => {
-                 User.findById(id)
+                User.findById(id)
                     .then(user => {
                         if (!user) {
                             return res.status(404).send({
@@ -68,7 +69,7 @@ module.exports = {
             });
     },
 
-    
+
     // Retrieve and return all animals from the database.
     findAll: async (req, res) => {
         const ORDER_DESC_BY_DATE = -1;
@@ -137,7 +138,8 @@ module.exports = {
             socialLevel: req.body.socialLevel || "unknow",
             traumaLevel: req.body.traumaLevel || "unknown",
             energyLevel: req.body.energyLevel || "unknown",
-            owner: req.body.owner || "unknown"
+            owner: req.body.owner || "unknown",
+            status: req.body.status || "00"
         }, { new: true })
             .then(animal => {
                 if (!animal) {
