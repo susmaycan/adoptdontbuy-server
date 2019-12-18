@@ -15,6 +15,7 @@ const UserSchema = mongoose.Schema({
     first_name: String,
     last_name: String,
     email: String,
+    username: String,
     animals : [
         {type: mongoose.Schema.Types.ObjectId,ref:'Animal'}
     ],

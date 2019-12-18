@@ -8,24 +8,39 @@ module.exports = {
     create: async (req, res) => {
         if (!req.body._id) {
             return res.status(400).send({
-                message: "User _id can not be empty"
+                message: "User's _id can not be empty"
             });
         }
+
+        if (!req.body.email) {
+            return res.status(400).send({
+                message: "User's email can not be empty"
+            });
+        }
+
+        if (!req.body.username) {
+            return res.status(400).send({
+                message: "User's username can not be empty"
+            });
+        }
+
 
         const user = new User({
             _id: req.body._id,
             phone: req.body.phone || "unknown",
             animal_shetter: req.body.animal_shetter || false,
-            website: req.body.website || "unknown",
+            website: req.body.website || "https://www.unknown.es",
             address_line: req.body.address_line || "unknown",
             country: req.body.country || "Spain",
             region: req.body.region || "unknown",
             province: req.body.province || "unknown",
             city: req.body.city || "unknown",
-            picture: req.body.picture || "unknown",
+            picture: req.body.picture || "https://www.unknown.es",
             description: req.body.description || "unknown",
             first_name: req.body.first_name || "unknown",
             last_name: req.body.last_name || "unknown",
+            email: req.body.email,
+            username: req.body.username,
             animals: req.body.animals || [],
             likedAnimals: req.body.likedAnimals || [],
             adopted: req.body.adopted || [],
@@ -104,7 +119,19 @@ module.exports = {
         // Validate Request
         if (!req.body._id) {
             return res.status(400).send({
-                message: "User id can not be empty"
+                message: "User's _id can not be empty"
+            });
+        }
+
+        if (!req.body.email) {
+            return res.status(400).send({
+                message: "User's email can not be empty"
+            });
+        }
+
+        if (!req.body.username) {
+            return res.status(400).send({
+                message: "User's username can not be empty"
             });
         }
 
@@ -123,7 +150,10 @@ module.exports = {
             description: req.body.description || "unknown",
             first_name: req.body.first_name || "unknown",
             last_name: req.body.last_name || "unknown",
-            animals: req.body.animals || ["unknown"],     likedAnimals: req.body.likedAnimals || [],
+            animals: req.body.animals || ["unknown"],
+            email: req.body.email,
+            username: req.body.username,
+            likedAnimals: req.body.likedAnimals || [],
             adopted: req.body.adopted || [],
             reserved: req.body.reserved || []
         }, { new: true })
