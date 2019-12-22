@@ -185,5 +185,50 @@ module.exports = {
                     message: "Could not delete animal with id " + id
                 });
             });
+    },
+
+    filter: async (req, res) => {
+        var query = {};
+
+        if (req.query.city !== undefined && req.query.city !== '' && req.query.city !== null) {
+            query.city = req.query.city;
+        }
+
+        if (req.query.province !== undefined && req.query.province !== '' && req.query.province !== null && req.query.province !== "-1") {
+            query.province = req.query.province;
+        }
+
+        if (req.query.region !== undefined && req.query.region !== '' && req.query.region !== null && req.query.region !== "-1") {
+            query.region = req.query.region;
+        }
+
+        if(req.query.size !== undefined && req.query.size !== '' && req.query.size !== null && req.query.size !== "-1"){
+            query.size = req.query.size;
+        }
+
+        if(req.query.gender !== undefined && req.query.gender !== '' && req.query.gender !== null && req.query.gender !== "-1"){
+            query.gender = req.query.gender;
+        }
+
+        if(req.query.specie !== undefined && req.query.specie !== '' && req.query.specie !== null && req.query.specie !== "-1"){
+            query.specie = req.query.specie;
+        }
+
+        //TODO add birthdate and owner?
+
+
+        const ORDER_DESC_BY_DATE = -1;
+
+        await Animal.find(query).sort({ 'updatedAt': ORDER_DESC_BY_DATE })
+            .then(animals => {
+                console.log("Query ", query);
+                res.send(animals);
+            }).catch(err => {
+                res.status(500).send({
+                    message: err.message || "Some error occurred while retrieving animals."
+                });
+            });
+
+
     }
 }

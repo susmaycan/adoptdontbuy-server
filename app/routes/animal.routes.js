@@ -15,4 +15,6 @@ module.exports = (app) => {
 
     // Delete a Note with noteId
     app.delete('/animal/:animalId', animals.delete);
+
+    app.get('/search', animals.filter);
 }
