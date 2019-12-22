@@ -202,18 +202,41 @@ module.exports = {
             query.region = req.query.region;
         }
 
-        if(req.query.size !== undefined && req.query.size !== '' && req.query.size !== null && req.query.size !== "-1"){
+        if (req.query.size !== undefined && req.query.size !== '' && req.query.size !== null && req.query.size !== "-1") {
             query.size = req.query.size;
         }
 
-        if(req.query.gender !== undefined && req.query.gender !== '' && req.query.gender !== null && req.query.gender !== "-1"){
+        if (req.query.gender !== undefined && req.query.gender !== '' && req.query.gender !== null && req.query.gender !== "-1") {
             query.gender = req.query.gender;
         }
 
-        if(req.query.specie !== undefined && req.query.specie !== '' && req.query.specie !== null && req.query.specie !== "-1"){
+        if (req.query.specie !== undefined && req.query.specie !== '' && req.query.specie !== null && req.query.specie !== "-1") {
             query.specie = req.query.specie;
         }
 
+        if (req.query.yearBorn !== undefined && req.query.yearBorn !== '' && req.query.yearBorn !== null && req.query.yearBorn !== "-1") {
+            query.yearBorn = req.query.yearBorn;
+        }
+
+        if (req.query.castrated !== undefined && req.query.castrated !== '' && req.query.castrated !== null && req.query.castrated !== "-1") {
+            query.castrated = req.query.castrated;
+        }
+
+        if (req.query.vaccinated !== undefined && req.query.vaccinated !== '' && req.query.vaccinated !== null && req.query.vaccinated !== "-1") {
+            query.vaccinated = req.query.vaccinated;
+        }
+
+        if (req.query.alongWithDogs !== undefined && req.query.alongWithDogs !== '' && req.query.alongWithDogs !== null && req.query.alongWithDogs !== "-1") {
+            query.alongWithDogs = req.query.alongWithDogs;
+        }
+
+        if (req.query.alongWithCats !== undefined && req.query.alongWithCats !== '' && req.query.alongWithCats !== null && req.query.alongWithCats !== "-1") {
+            query.alongWithCats = req.query.alongWithCats;
+        }
+
+        if (req.query.alongWithKids !== undefined && req.query.alongWithKids !== '' && req.query.alongWithKids !== null && req.query.alongWithKids !== "-1") {
+            query.alongWithKids = req.query.alongWithKids;
+        }
         //TODO add birthdate and owner?
 
 
