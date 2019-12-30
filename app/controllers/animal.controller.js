@@ -18,13 +18,12 @@ module.exports = {
             breed: req.body.breed || "unknown",
             gender: req.body.gender || "unknown",
             size: req.body.size || "unknown",
-            status: req.body.status || "unknown",
             yearBorn: req.body.yearBorn || "unknown",
             country: req.body.country || "Spain",
             region: req.body.region || "unknown",
             province: req.body.province || "unknown",
             city: req.body.city || "unknown",
-            picture: req.body.picture || "unknown",
+            picture: req.body.picture || [],
             about: req.body.about || "unknown",
             castrated: req.body.castrated || false,
             vaccinated: req.body.vaccinated || false,
@@ -50,6 +49,8 @@ module.exports = {
                         }
                         user.animals.push(animal);
                         user.save();
+                        console.log("Data ", data);
+                        console.log("Animal ", animal);
                         res.send(data);
 
                     }).catch(err => {
@@ -115,6 +116,8 @@ module.exports = {
             });
         }
 
+        console.log("GETTING ", req.body);
+
         // Find animal and update it with the request body
         await Animal.findByIdAndUpdate(req.params.animalId, {
             name: req.body.name,
@@ -122,13 +125,12 @@ module.exports = {
             breed: req.body.breed || "unknown",
             gender: req.body.gender || "unknown",
             size: req.body.size || "unknown",
-            status: req.body.status || "unknown",
             yearBorn: req.body.yearBorn || "unknown",
             country: req.body.country || "unknown",
             region: req.body.region || "unknown",
             province: req.body.province || "unknown",
             city: req.body.city || "unknown",
-            picture: req.body.picture || "unknown",
+            picture: req.body.picture || [],
             about: req.body.about || "unknown",
             castrated: req.body.castrated || false,
             vaccinated: req.body.vaccinated || false,
@@ -147,6 +149,7 @@ module.exports = {
                         message: "Animal not found with id " + req.params.animalId
                     });
                 }
+                console.log("UPDATED ", animal);
                 res.send(animal);
             }).catch(err => {
                 if (err.kind === 'ObjectId') {

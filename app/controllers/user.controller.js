@@ -35,7 +35,7 @@ module.exports = {
             region: req.body.region || "unknown",
             province: req.body.province || "unknown",
             city: req.body.city || "unknown",
-            picture: req.body.picture || "https://www.unknown.es",
+            picture: req.body.picture || "unknown",
             description: req.body.description || "unknown",
             first_name: req.body.first_name || "unknown",
             last_name: req.body.last_name || "unknown",
