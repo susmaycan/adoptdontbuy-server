@@ -1,20 +1,21 @@
 module.exports = (app) => {
     const animals = require('../controllers/animal.controller.js');
 
-    // Create a new Note
+    // Create a new animal
     app.post('/animal', animals.create);
 
-    // Retrieve all Notes
+    // Retrieve all animals
     app.get('/animal', animals.findAll);
 
-    // Retrieve a single Note with noteId
+    // Retrieve an animal by its id
     app.get('/animal/:animalId', animals.findOne);
 
-    // Update a Note with noteId
+    // Update an animal
     app.put('/animal/:animalId', animals.update);
 
-    // Delete a Note with noteId
+    // Delete an animal
     app.delete('/animal/:animalId', animals.delete);
 
+    //Filter all animals
     app.get('/search', animals.filter);
 }

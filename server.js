@@ -1,6 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 var cors = require('cors');
+const multer = require("multer");
+const GridFsStorage = require("multer-gridfs-storage");
+const Grid = require("gridfs-stream");
+const crypto = require("crypto");
+const path = require("path");
 
 // create express app
 const app = express();
@@ -16,16 +21,17 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 })
-    
+
 // Configuring the database
-const dbConfig = require('./config/database.config.js');
+const uri = "mongodb+srv://defaultuser:2WiI75ZCmEc037u8@adb-i6pvm.gcp.mongodb.net/test?retryWrites=true&w=majority";
 const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 
 // Connecting to the database
-mongoose.connect(dbConfig.url, {
-    useNewUrlParser: true
+mongoose.connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
 }).then(() => {
     console.log("Successfully connected to the database");
 }).catch(err => {
@@ -35,6 +41,7 @@ mongoose.connect(dbConfig.url, {
 
 app.use(cors());
 require('./app/routes/animal.routes.js')(app);
+require('./app/routes/photo.routes')(app);
 require('./app/routes/user.routes.js')(app);
 
 // listen for requests

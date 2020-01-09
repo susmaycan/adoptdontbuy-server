@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const UserSchema = mongoose.Schema({
     _id: String,
     phone: String,
-    picture: String,
+    picture: { data: Buffer, contentType: String },
     animal_shetter: Boolean,
     website: String,
     address_line: String,
@@ -16,18 +16,18 @@ const UserSchema = mongoose.Schema({
     last_name: String,
     email: String,
     username: String,
-    animals : [
-        {type: mongoose.Schema.Types.ObjectId,ref:'Animal'}
+    animals: [
+        { type: mongoose.Schema.Types.ObjectId, ref: 'Animal' }
     ],
-    likedAnimals : [
-        {type: mongoose.Schema.Types.ObjectId,ref:'Animal'}
+    likedAnimals: [
+        { type: mongoose.Schema.Types.ObjectId, ref: 'Animal' }
     ],
-    adopted : [
-        {type: mongoose.Schema.Types.ObjectId,ref:'Animal'}
+    adopted: [
+        { type: mongoose.Schema.Types.ObjectId, ref: 'Animal' }
     ],
     reserved: [
-        {type: mongoose.Schema.Types.ObjectId,ref:'Animal'}
-    ], 
+        { type: mongoose.Schema.Types.ObjectId, ref: 'Animal' }
+    ],
 }, {
     timestamps: true,
     _id: false

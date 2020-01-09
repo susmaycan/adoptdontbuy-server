@@ -63,15 +63,23 @@ module.exports = {
 
     // Retrieve and return all users from the database.
     animalsByUser: async (req, res) => {
-        await User.findById(req.params.userId).populate('animals')
-            .then(users => {
-                console.log("User's animals retrieved");
-                res.send(users.animals);
-            }).catch(err => {
-                res.status(500).send({
-                    message: err.message || "Some error occurred while retrieving users."
+
+        try {
+            await User.findById(req.params.userId).populate('animals')
+                .then(users => {
+                    console.log("User's animals retrieved");
+                    res.send(users.animals);
+                })
+                .catch(err => {
+                    res.status(500).send({
+                        message: err.message || "Some error occurred while animal's retrieving users."
+                    });
                 });
-            });
+        } catch (err) {
+            console.log("Some error occurred while retrieving animal's users: ", err.message)
+            res.status(500).send(err);
+        }
+
         console.log("Exiting animalsByUser...");
     },
 
