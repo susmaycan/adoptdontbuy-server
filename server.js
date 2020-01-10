@@ -17,10 +17,11 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
+    res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
-})
+});
 
 // Configuring the database
 const uri = "mongodb+srv://defaultuser:2WiI75ZCmEc037u8@adb-i6pvm.gcp.mongodb.net/test?retryWrites=true&w=majority";
@@ -41,9 +42,8 @@ mongoose.connect(uri, {
 
 app.use(cors());
 require('./app/routes/animal.routes.js')(app);
-require('./app/routes/photo.routes')(app);
 require('./app/routes/user.routes.js')(app);
-
+require('./app/routes/photo.routes')(app);
 // listen for requests
 app.listen(3001, () => {
     console.log("Server is listening on port 3001");

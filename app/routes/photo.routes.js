@@ -4,7 +4,7 @@ const GridFsStorage = require("multer-gridfs-storage");
 const Grid = require("gridfs-stream");
 const crypto = require("crypto");
 const mongoose = require('mongoose');
-
+var ObjectId = require('mongodb').ObjectID;
 const conn = mongoose.createConnection(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -39,9 +39,11 @@ conn.once("open", () => {
 
 module.exports = (app) => {
     app.get('/image/:photoId', (req, res, err) => {
+        //const filename = req.params.photoId;
+        const id = ObjectId(req.params.photoId);
+        //console.log("Param ", filename);
         console.log("Entering getImage");
-        console.log("Parameter ", req.params.photoId);
-        gfs.files.findOne({ filename: req.params.photoId })
+        gfs.files.findOne({ _id: id })
             .then(file => {
                 if (!file || file.length === 0) {
                     console.log("Not file found");
@@ -58,23 +60,22 @@ module.exports = (app) => {
                 }
             }).catch(err => {
                 return ("Error when retrieving the picture: ", err.message);
-
             });
 
         console.log("End of function");
     });
 
     app.post("/image", (req, res, err) => {
-        console.log("Upload ", upload);
+        console.log("In ", req.body.img);
         upload(req, res, function (err) {
-            if (err instanceof multer.MulterError) {
-                console.log("Error when uploading the picture ", err.message);
-            } else if (err) {
-                console.log("Error when uploading the picture ", err.message);
-            }
-        
-            res.status(201).send();
-          });
+            console.log("Req file ", res.req.file);
+            // if (err instanceof multer.MulterError) {
+            //     console.log("Error when uploading the picture ", err.message);
+            // } else if (err) {
+            //     console.log("Error when uploading the picture ", err.message);
+            // }
+            res.status(201).send(res.req.file.id);
+        });
     });
 }
 
