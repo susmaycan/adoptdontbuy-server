@@ -1,10 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 var cors = require('cors');
-const multer = require("multer");
-const GridFsStorage = require("multer-gridfs-storage");
-const Grid = require("gridfs-stream");
-const crypto = require("crypto");
 const path = require("path");
 
 // create express app
@@ -43,7 +39,6 @@ mongoose.connect(uri, {
 app.use(cors());
 require('./app/routes/animal.routes.js')(app);
 require('./app/routes/user.routes.js')(app);
-require('./app/routes/photo.routes')(app);
 // listen for requests
 app.listen(3001, () => {
     console.log("Server is listening on port 3001");
