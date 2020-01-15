@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 var cors = require('cors');
+const serverless = require("serverless-http");
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -41,6 +42,8 @@ app.use(cors());
 require('./app/routes/animal.routes.js')(app);
 require('./app/routes/user.routes.js')(app);
 // listen for requests
-app.listen(3001, () => {
-    console.log("Server is listening on port 3001");
-});
+// app.listen(3001, () => {
+//     console.log("Server is listening on port 3001");
+// });
+module.exports = app;
+module.exports.handler = serverless(app);
