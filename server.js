@@ -1,7 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 var cors = require('cors');
-const path = require("path");
+const dotenv = require('dotenv');
+dotenv.config();
 
 // create express app
 const app = express();
@@ -20,7 +21,7 @@ app.use(function (req, res, next) {
 });
 
 // Configuring the database
-const uri = "mongodb+srv://defaultuser:2WiI75ZCmEc037u8@adb-i6pvm.gcp.mongodb.net/test?retryWrites=true&w=majority";
+const uri = process.env.mongodburi;
 const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
