@@ -38,6 +38,7 @@ mongoose.connect(uri, {
 });
 const PORT = process.env.PORT || 3001;
 app.use(cors());
+app.get("/", "Welcome to adoptdontbuy API");
 require('./app/routes/animal.routes.js')(app);
 require('./app/routes/user.routes.js')(app);
 // listen for requests
