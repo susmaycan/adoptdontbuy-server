@@ -1,7 +1,7 @@
 {
-  "name": "node-easy-notes-app",
+  "name": "adoptdontbuy-server",
   "version": "1.0.0",
-  "description": "Never miss a thing in Life. Take notes quickly. Organize and keep track of all your notes.",
+  "description": "adoptdontbuy API.",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,7 +16,7 @@
     "Mongoose",
     "Notes"
   ],
-  "author": "callicoder",
+  "author": "asdyrocks",
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.18.3",
