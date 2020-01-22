@@ -73,6 +73,17 @@ module.exports = {
 
     // Retrieve and return all animals from the database.
     findAll: async (req, res) => {
+        await Animal.find()
+            .then(animals => {
+                res.send(animals);
+            }).catch(err => {
+                res.status(500).send({
+                    message: err.message || "Some error occurred while retrieving animals."
+                });
+            });
+    },
+
+    retrieveLatestAnimals: async (req, res) => {
         const ORDER_DESC_BY_DATE = -1;
 
         await Animal.find().sort({ 'updatedAt': ORDER_DESC_BY_DATE }).limit(8)
