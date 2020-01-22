@@ -75,7 +75,7 @@ module.exports = {
     findAll: async (req, res) => {
         const ORDER_DESC_BY_DATE = -1;
 
-        await Animal.find().sort({ 'updatedAt': ORDER_DESC_BY_DATE }).limit(9)
+        await Animal.find().sort({ 'updatedAt': ORDER_DESC_BY_DATE }).limit(8)
             .then(animals => {
                 res.send(animals);
             }).catch(err => {
