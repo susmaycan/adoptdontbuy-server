@@ -1,10 +1,13 @@
 {
-  "name": "node-easy-notes-app",
+  "name": "adoptdontbuy-server",
   "version": "1.0.0",
-  "description": "Never miss a thing in Life. Take notes quickly. Organize and keep track of all your notes.",
+  "description": "adoptdontbuy API.",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": "12.x"
   },
   "keywords": [
     "Express",
@@ -13,23 +16,13 @@
     "Mongoose",
     "Notes"
   ],
-  "author": "callicoder",
+  "author": "asdyrocks",
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
-    "crypto": "^1.0.1",
     "dotenv": "^8.2.0",
     "express": "^4.16.3",
-    "firebase": "^7.6.1",
-    "firebase-admin": "^8.9.0",
-    "fs": "0.0.1-security",
-    "gridfs-stream": "^1.1.1",
-    "mongoose": "^5.7.13",
-    "multer": "^1.4.2",
-    "multer-gridfs-storage": "^4.0.1",
-    "netlify-lambda": "^1.6.3",
-    "react-multistep": "^3.6.16",
-    "serverless-http": "^2.3.0"
+    "mongoose": "^5.7.13"
   }
 }
