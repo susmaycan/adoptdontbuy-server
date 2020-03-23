@@ -41,10 +41,14 @@ module.exports = {
             last_name: req.body.last_name || "unknown",
             email: req.body.email,
             username: req.body.username,
-            animals: req.body.animals || [],
+            inAdoption: req.body.inAdoption || [],
             likedAnimals: req.body.likedAnimals || [],
-            adopted: req.body.adopted || [],
-            reserved: req.body.reserved || []
+            adoptedByOthers: req.body.adoptedByOthers || [],
+            reserved: req.body.reserved || [],
+            adoptedByMe: req.body.adoptedByMe || [],
+            favourites: req.body.favourites || [],
+            reviews: req.body.reviews || []
+
         });
 
         await user.save()
@@ -62,10 +66,51 @@ module.exports = {
     },
 
     // Retrieve and return all users from the database.
-    animalsByUser: async (req, res) => {
-
+    animalByUser: async (req, res) => {
         try {
-            await User.findById(req.params.userId).populate('animals')
+            await User.findById(req.params.userId)
+                .populate('inAdoption')
+                .populate('adoptedByOthers')
+                .populate('reserved')
+                .populate('favourites')
+                .populate('adoptedByMe')
+                .then(user => {
+                    switch(req.query.type) {
+                        case 'inAdoption':
+                        default:
+                            res.send(user.inAdoption);
+                            break;
+                        case 'adoptedByOthers':
+                            res.send(user.adoptedByOthers);
+                            break;
+                        case 'reserved':
+                            res.send(user.reserved);
+                            break;
+                        case 'favourites':
+                            res.send(user.favourites);
+                            break;
+                        case 'adoptedByMe':
+                            res.send(user.adoptedByMe);
+                          break;
+                      } 
+                    console.log("User's animals retrieved ", user);
+                })
+                .catch(err => {
+                    res.status(500).send({
+                        message: err.message || "Some error occurred while animal's retrieving users."
+                    });
+                });
+        } catch (err) {
+            console.log("Some error occurred while retrieving animal's users: ", err.message)
+            res.status(500).send(err);
+        }
+
+        console.log("Exiting animalsByUser...");
+    },
+
+    animalsAdoptedByOthers: async (req, res) => {
+        try {
+            await User.findById(req.params.userId).populate('adoptedByOthers')
                 .then(users => {
                     console.log("User's animals retrieved");
                     res.send(users.animals);
@@ -82,7 +127,6 @@ module.exports = {
 
         console.log("Exiting animalsByUser...");
     },
-
 
     // Retrieve and return all users from the database.
     findAll: async (req, res) => {
@@ -158,12 +202,16 @@ module.exports = {
             description: req.body.description || "unknown",
             first_name: req.body.first_name || "unknown",
             last_name: req.body.last_name || "unknown",
-            animals: req.body.animals || ["unknown"],
             email: req.body.email,
             username: req.body.username,
+            inAdoption: req.body.inAdoption || [],
             likedAnimals: req.body.likedAnimals || [],
-            adopted: req.body.adopted || [],
-            reserved: req.body.reserved || []
+            adoptedByOthers: req.body.adoptedByOthers || [],
+            reserved: req.body.reserved || [],
+            adoptedByMe: req.body.adoptedByMe || [],
+            favourites: req.body.favourites || [],
+            reviews: req.body.reviews || []
+
         }, { new: true })
             .then(user => {
                 if (!user) {

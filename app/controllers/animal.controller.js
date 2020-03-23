@@ -70,12 +70,13 @@ module.exports = {
             });
     },
 
-
     // Retrieve and return all animals from the database.
     findAll: async (req, res) => {
         const ORDER_DESC_BY_DATE = -1;
 
-        await Animal.find().sort({ 'updatedAt': ORDER_DESC_BY_DATE }).limit(9)
+        await Animal.find({status:'00'})
+            .sort({ 'updatedAt': ORDER_DESC_BY_DATE })
+            .limit(9)
             .then(animals => {
                 res.send(animals);
             }).catch(err => {
@@ -189,6 +190,7 @@ module.exports = {
                 });
             });
     },
+
     filter: async (req, res) => {
         var query = {};
 

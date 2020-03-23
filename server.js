@@ -40,6 +40,8 @@ mongoose.connect(uri, {
 app.use(cors());
 require('./app/routes/animal.routes.js')(app);
 require('./app/routes/user.routes.js')(app);
+require('./app/routes/review.routes.js')(app);
+
 // listen for requests
 app.listen(3001, () => {
     console.log("Server is listening on port 3001");
