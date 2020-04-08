@@ -42,7 +42,8 @@ require('./app/routes/animal.routes.js')(app);
 require('./app/routes/user.routes.js')(app);
 require('./app/routes/review.routes.js')(app);
 
+const PORT = process.env.PORT || 3001;
 // listen for requests
-app.listen(3001, () => {
+app.listen(PORT, () => {
     console.log("Server is listening on port 3001");
 });
