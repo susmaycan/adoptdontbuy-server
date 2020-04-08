@@ -7,9 +7,6 @@ module.exports = (app) => {
     // Retrieve all animals
     app.get('/animal', animals.findAll);
 
-    // Retrieve latest animals
-    app.get('/animal/latest', animals.retrieveLatestAnimals);
-
     // Retrieve an animal by its id
     app.get('/animal/:animalId', animals.findOne);
 

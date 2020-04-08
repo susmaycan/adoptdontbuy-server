@@ -7,10 +7,10 @@ module.exports = {
         // Validate request
         if (!req.body.name) {
             return res.status(400).send({
-                message: "Animal name can not be empty"
+                message: "UserDetail name can not be empty"
             });
         }
-        var id = req.body.owner;
+        const id = req.body.owner;
         // Create an animal
         const animal = new Animal({
             name: req.body.name,
@@ -44,23 +44,23 @@ module.exports = {
                     .then(user => {
                         if (!user) {
                             return res.status(404).send({
-                                message: "User not found with id " + req.params.userId
+                                message: "User not found with id " + id
                             });
                         }
-                        user.animals.push(animal);
+                        user.inAdoption.push(animal);
                         user.save();
                         console.log("Data ", data);
-                        console.log("Animal ", animal);
+                        console.log("UserDetail ", animal);
                         res.send(data);
 
                     }).catch(err => {
                         if (err.kind === 'ObjectId') {
                             return res.status(404).send({
-                                message: "User not found with id " + req.params.userId
+                                message: "Object id error. User not found with id " + id
                             });
                         }
                         return res.status(500).send({
-                            message: "Error retrieving user with id " + req.params.userId
+                            message: "Error retrieving user with id " +id
                         });
                     });
             }).catch(err => {
@@ -72,17 +72,6 @@ module.exports = {
 
     // Retrieve and return all animals from the database.
     findAll: async (req, res) => {
-        await Animal.find()
-            .then(animals => {
-                res.send(animals);
-            }).catch(err => {
-                res.status(500).send({
-                    message: err.message || "Some error occurred while retrieving animals."
-                });
-            });
-    },
-
-    retrieveLatestAnimals: async (req, res) => {
         const ORDER_DESC_BY_DATE = -1;
 
         await Animal.find({status:'00'})
@@ -103,14 +92,14 @@ module.exports = {
             .then(animal => {
                 if (!animal) {
                     return res.status(404).send({
-                        message: "Animal not found with id " + req.params.animalId
+                        message: "UserDetail not found with id " + req.params.animalId
                     });
                 }
                 res.send(animal);
             }).catch(err => {
                 if (err.kind === 'ObjectId') {
                     return res.status(404).send({
-                        message: "Animal not found with id " + req.params.animalId
+                        message: "UserDetail not found with id " + req.params.animalId
                     });
                 }
                 return res.status(500).send({
@@ -124,7 +113,7 @@ module.exports = {
         // Validate Request
         if (!req.body.name) {
             return res.status(400).send({
-                message: "Animal name can not be empty"
+                message: "UserDetail name can not be empty"
             });
         }
 
@@ -158,7 +147,7 @@ module.exports = {
             .then(animal => {
                 if (!animal) {
                     return res.status(404).send({
-                        message: "Animal not found with id " + req.params.animalId
+                        message: "UserDetail not found with id " + req.params.animalId
                     });
                 }
                 console.log("UPDATED ", animal);
@@ -166,7 +155,7 @@ module.exports = {
             }).catch(err => {
                 if (err.kind === 'ObjectId') {
                     return res.status(404).send({
-                        message: "Animal not found with id " + req.params.animalId
+                        message: "UserDetail not found with id " + req.params.animalId
                     });
                 }
                 return res.status(500).send({
@@ -184,15 +173,15 @@ module.exports = {
                 console.log(animal);
                 if (!animal) {
                     return res.status(404).send({
-                        message: "Animal not found with id " + id
+                        message: "UserDetail not found with id " + id
                     });
                 }
-                res.send({ message: "Animal deleted successfully!" });
+                res.send({ message: "UserDetail deleted successfully!" });
 
             }).catch(err => {
                 if (err.kind === 'ObjectId' || err.name === 'NotFound') {
                     return res.status(404).send({
-                        message: "Animal not found with id " + id
+                        message: "UserDetail not found with id " + id
                     });
                 }
                 console.log("Error in delete animal ", err.message);

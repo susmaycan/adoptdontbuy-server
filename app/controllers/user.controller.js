@@ -1,5 +1,4 @@
 const User = require('../models/User.js');
-const AnimalController = require('./animal.controller');
 const Animal = require('../models/Animal.js');
 
 // Create and Save a new user
@@ -77,22 +76,26 @@ module.exports = {
                 .then(user => {
                     switch(req.query.type) {
                         case 'inAdoption':
-                        default:
-                            res.send(user.inAdoption);
-                            break;
+                            res.send(user.inAdoption)
+                            break
                         case 'adoptedByOthers':
-                            res.send(user.adoptedByOthers);
-                            break;
+                            res.send(user.adoptedByOthers)
+                            break
                         case 'reserved':
-                            res.send(user.reserved);
-                            break;
+                            res.send(user.reserved)
+                            break
                         case 'favourites':
-                            res.send(user.favourites);
-                            break;
+                            res.send(user.favourites)
+                            break
                         case 'adoptedByMe':
-                            res.send(user.adoptedByMe);
-                          break;
-                      } 
+                            res.send(user.adoptedByMe)
+                          break
+                        default:
+                            res.send({
+                                "inAdoption": user.inAdoption,
+                                "favourites": user.favourites
+                            })
+                      }
                     console.log("User's animals retrieved ", user);
                 })
                 .catch(err => {
@@ -142,7 +145,7 @@ module.exports = {
 
     // Find a single user with a userId
     findOne: async (req, res) => {
-        var id = req;
+        let id = req;
         if (req.params !== undefined) {
             id = req.params.userId;
         }
@@ -267,13 +270,13 @@ module.exports = {
                         console.log("Delete ", animalToDelete);
                         if (!animalToDelete) {
                             return res.status(404).send({
-                                message: "Animal not found with id " + id
+                                message: "UserDetail not found with id " + id
                             });
                         }
                     }).catch(err => {
                         if (err.kind === 'ObjectId' || err.name === 'NotFound') {
                             return res.status(404).send({
-                                message: "Animal not found with id " + id
+                                message: "UserDetail not found with id " + id
                             });
                         }
                         console.log("Error in delete animal ", err.message);

@@ -36,18 +36,13 @@ mongoose.connect(uri, {
     console.log('Could not connect to the database. Exiting now...', err);
     process.exit();
 });
-const PORT = process.env.PORT || 3001;
+
 app.use(cors());
-var router = express.Router();
-router.get('/', function (req, res) {
-    res.send("adoptdontbuy API");
-});
-app.use(router);
 require('./app/routes/animal.routes.js')(app);
 require('./app/routes/user.routes.js')(app);
 require('./app/routes/review.routes.js')(app);
 
 // listen for requests
-app.listen(PORT, () => {
-    console.log("Server is listening on port ", PORT);
+app.listen(3001, () => {
+    console.log("Server is listening on port 3001");
 });
