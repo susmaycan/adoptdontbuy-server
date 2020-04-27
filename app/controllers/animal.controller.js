@@ -19,6 +19,7 @@ module.exports = {
             gender: req.body.gender || "unknown",
             size: req.body.size || "unknown",
             yearBorn: req.body.yearBorn || "unknown",
+            age: req.body.age || "unknown",
             country: req.body.country || "Spain",
             region: req.body.region || "unknown",
             province: req.body.province || "unknown",
@@ -127,6 +128,7 @@ module.exports = {
             gender: req.body.gender || "unknown",
             size: req.body.size || "unknown",
             yearBorn: req.body.yearBorn || "unknown",
+            age: req.body.age || "unknown",
             country: req.body.country || "unknown",
             region: req.body.region || "unknown",
             province: req.body.province || "unknown",
@@ -166,22 +168,22 @@ module.exports = {
 
     // Delete a animal with the specified animalId in the request
     delete: async (req, res) => {
-        var id = req.params.animalId;
+        let id = req.params.animalId;
 
         await Animal.findByIdAndDelete(id)
             .then(animal => {
                 console.log(animal);
                 if (!animal) {
                     return res.status(404).send({
-                        message: "UserDetail not found with id " + id
-                    });
+                        message: 'Animal not found with id ' + id
+                    })
                 }
-                res.send({ message: "UserDetail deleted successfully!" });
+                res.send({ message: 'Animal deleted successfully!' })
 
             }).catch(err => {
                 if (err.kind === 'ObjectId' || err.name === 'NotFound') {
                     return res.status(404).send({
-                        message: "UserDetail not found with id " + id
+                        message: "Animal not found with id " + id
                     });
                 }
                 console.log("Error in delete animal ", err.message);
@@ -192,7 +194,7 @@ module.exports = {
     },
 
     filter: async (req, res) => {
-        var query = {};
+        let query = {};
 
         if (req.query.city !== undefined && req.query.city !== '' && req.query.city !== null) {
             query.city = req.query.city;
@@ -218,8 +220,8 @@ module.exports = {
             query.specie = req.query.specie;
         }
 
-        if (req.query.yearBorn !== undefined && req.query.yearBorn !== '' && req.query.yearBorn !== null && req.query.yearBorn !== "-1") {
-            query.yearBorn = req.query.yearBorn;
+        if (req.query.age !== undefined && req.query.age !== '' && req.query.age !== null && req.query.age !== "-1") {
+            query.age = req.query.age;
         }
 
         if (req.query.castrated !== undefined && req.query.castrated !== '' && req.query.castrated !== null && req.query.castrated !== "-1") {
@@ -248,7 +250,6 @@ module.exports = {
 
         await Animal.find(query).sort({ 'updatedAt': ORDER_DESC_BY_DATE })
             .then(animals => {
-                console.log("Query ", query);
                 res.send(animals);
             }).catch(err => {
                 res.status(500).send({

@@ -7,6 +7,7 @@ const AnimalSchema = mongoose.Schema({
     gender: String,
     size: String,
     yearBorn: String,
+    age: String,
     country: String,
     region: String,
     province: String,
@@ -20,7 +21,7 @@ const AnimalSchema = mongoose.Schema({
     alongWithKids: Boolean,
     socialLevel: Number,
     traumaLevel: Number,
-    energyLevel: Number, 
+    energyLevel: Number,
     status: String,
     owner: {
         type: String,
