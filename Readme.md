@@ -1,6 +1,6 @@
-# EasyNotes Application
+# adoptdontbuy server
 
-Build a Restful CRUD API for a simple Note-Taking application using Node.js, Express and MongoDB.
+Restful CRUD API build with Node.js, Express and MongoDB.
 
 ## Steps to Setup
 
@@ -15,10 +15,4 @@ npm install
 ```bash
 node server.js
 ```
-
-You can browse the apis at <http://localhost:3000>
-
-## Tutorial
-You can find the tutorial for this application at [The CalliCoder Blog](https://www.callicoder.com) - 
-
-<https://www.callicoder.com/node-js-express-mongodb-restful-crud-api-tutorial/>
+3. Open the browser at: <http://localhost:3001>
