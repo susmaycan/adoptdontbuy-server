@@ -4,7 +4,7 @@ const UserSchema = mongoose.Schema({
     _id: String,
     phone: String,
     picture: { data: Buffer, contentType: String },
-    animal_shetter: Boolean,
+    animal_shelter: Boolean,
     website: String,
     address_line: String,
     country: String,
@@ -36,7 +36,7 @@ const UserSchema = mongoose.Schema({
     adoptedByMe: [
         { type: mongoose.Schema.Types.ObjectId, ref: 'Animal' }
     ],
-    
+
     reviews: [
         { type: mongoose.Schema.Types.ObjectId, ref: 'Review' }
     ],

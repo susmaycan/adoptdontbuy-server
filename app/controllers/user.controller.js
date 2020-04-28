@@ -27,7 +27,7 @@ module.exports = {
         const user = new User({
             _id: req.body._id,
             phone: req.body.phone || "unknown",
-            animal_shetter: req.body.animal_shetter || false,
+            animal_shelter: req.body.animal_shelter || false,
             website: req.body.website || "https://www.unknown.es",
             address_line: req.body.address_line || "unknown",
             country: req.body.country || "Spain",
@@ -52,16 +52,12 @@ module.exports = {
 
         await user.save()
             .then(data => {
-                res.send(data);
-                console.log("Saved user");
+                res.send(data)
             }).catch(err => {
                 res.status(500).send({
                     message: err.message || "Some error occurred while creating the user."
                 });
             });
-
-        console.log("Exiting create user...");
-
     },
 
     // Retrieve and return all users from the database.
@@ -96,7 +92,6 @@ module.exports = {
                                 "favourites": user.favourites
                             })
                       }
-                    console.log("User's animals retrieved ", user);
                 })
                 .catch(err => {
                     res.status(500).send({
@@ -107,16 +102,13 @@ module.exports = {
             console.log("Some error occurred while retrieving animal's users: ", err.message)
             res.status(500).send(err);
         }
-
-        console.log("Exiting animalsByUser...");
     },
 
     animalsAdoptedByOthers: async (req, res) => {
         try {
             await User.findById(req.params.userId).populate('adoptedByOthers')
                 .then(users => {
-                    console.log("User's animals retrieved");
-                    res.send(users.animals);
+                    res.send(users.animals)
                 })
                 .catch(err => {
                     res.status(500).send({
@@ -127,8 +119,6 @@ module.exports = {
             console.log("Some error occurred while retrieving animal's users: ", err.message)
             res.status(500).send(err);
         }
-
-        console.log("Exiting animalsByUser...");
     },
 
     // Retrieve and return all users from the database.
@@ -194,7 +184,7 @@ module.exports = {
         await User.findByIdAndUpdate(req.params.userId, {
             _id: req.body._id,
             phone: req.body.phone || "unknown",
-            animal_shetter: req.body.animal_shetter || false,
+            animal_shelter: req.body.animal_shelter || false,
             website: req.body.website || "unknown",
             address_line: req.body.address_line || "unknown",
             country: req.body.country || "Spain",
@@ -267,7 +257,6 @@ module.exports = {
                 const id = animal;
                 await Animal.findByIdAndRemove(id)
                     .then(animalToDelete => {
-                        console.log("Delete ", animalToDelete);
                         if (!animalToDelete) {
                             return res.status(404).send({
                                 message: "UserDetail not found with id " + id
@@ -284,9 +273,7 @@ module.exports = {
                             message: "Could not delete animal with id " + id
                         });
                     });
-            };
-
+            }
         }
-        console.log("Exiting delete user...");
     }
 }
