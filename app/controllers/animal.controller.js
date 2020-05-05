@@ -93,20 +93,20 @@ module.exports = {
             .then(animal => {
                 if (!animal) {
                     return res.status(404).send({
-                        message: "UserDetail not found with id " + req.params.animalId
-                    });
+                        message: "Animal not found"
+                    })
                 }
                 res.send(animal);
             }).catch(err => {
                 if (err.kind === 'ObjectId') {
                     return res.status(404).send({
-                        message: "UserDetail not found with id " + req.params.animalId
-                    });
+                        message: "Animal not found"
+                    })
                 }
                 return res.status(500).send({
-                    message: "Error retrieving animal with id " + req.params.animalId
-                });
-            });
+                    message: "Error retrieving animal"
+                })
+            })
     },
 
     // Update a animal identified by the animalId in the request
