@@ -70,7 +70,7 @@ module.exports = {
                 .populate('favourites')
                 .populate('adoptedByMe')
                 .then(user => {
-                    switch(req.query.type) {
+                    switch (req.query.type) {
                         case 'inAdoption':
                             res.send(user.inAdoption)
                             break
@@ -85,13 +85,13 @@ module.exports = {
                             break
                         case 'adoptedByMe':
                             res.send(user.adoptedByMe)
-                          break
+                            break
                         default:
                             res.send({
                                 "inAdoption": user.inAdoption,
                                 "favourites": user.favourites
                             })
-                      }
+                    }
                 })
                 .catch(err => {
                     res.status(500).send({
@@ -140,6 +140,11 @@ module.exports = {
             id = req.params.userId;
         }
         await User.findById(id)
+            .populate('inAdoption')
+            .populate('adoptedByOthers')
+            .populate('reserved')
+            .populate('favourites')
+            .populate('adoptedByMe')
             .then(user => {
                 if (!user) {
                     return res.status(404).send({
@@ -205,7 +210,7 @@ module.exports = {
             favourites: req.body.favourites || [],
             reviews: req.body.reviews || []
 
-        }, { new: true })
+        }, {new: true})
             .then(user => {
                 if (!user) {
                     return res.status(404).send({
@@ -238,7 +243,7 @@ module.exports = {
                     });
                 }
                 userToDelete = user;
-                res.send({ message: "User deleted successfully!" });
+                res.send({message: "User deleted successfully!"});
             }).catch(err => {
                 if (err.kind === 'ObjectId' || err.name === 'NotFound') {
                     return res.status(404).send({
