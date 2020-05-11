@@ -104,6 +104,54 @@ module.exports = {
         }
     },
 
+    favourite: async (req, res) => {
+        let userId = req.params.userId
+        let animalId = req.params.animalId
+
+        await User.findById(userId)
+            .populate('inAdoption')
+            .populate('adoptedByOthers')
+            .populate('reserved')
+            .populate('favourites')
+            .populate('adoptedByMe')
+            .then(user => {
+                if (!user) {
+                    return res.status(404).send({
+                        message: "User not found"
+                    })
+                }
+                if (req.query.action === "delete") {
+                    let indexAnimal
+                    user.favourites.filter(function(animal, index) {
+                        if (animal._id === animalId)
+                            indexAnimal = index
+                    })
+                    if (indexAnimal > -1)
+                        user.favourites.splice(indexAnimal, 1)
+                } else {
+                    user.favourites.push(animalId)
+                }
+
+                user.save()
+                    .then(data => {
+                        res.send(data)
+                    }).catch(err => {
+                    res.status(500).send({
+                        message: err.message || "Some error occurred while updating the user."
+                    })
+                })
+            }).catch(err => {
+                if (err.kind === 'ObjectId') {
+                    return res.status(404).send({
+                        message: "User not found with id " + userId
+                    })
+                }
+                return res.status(500).send({
+                    message: "Error retrieving user with id " + userId
+                })
+            })
+    },
+
     animalsAdoptedByOthers: async (req, res) => {
         try {
             await User.findById(req.params.userId).populate('adoptedByOthers')
@@ -232,7 +280,7 @@ module.exports = {
 
     // Delete a user with the specified userId in the request
     delete: async (req, res) => {
-        var userToDelete = null;
+        let userToDelete = null;
 
         //We delete the user
         await User.findByIdAndDelete(req.params.userId)
