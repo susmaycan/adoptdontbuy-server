@@ -121,13 +121,14 @@ module.exports = {
                     })
                 }
                 if (req.query.action === "delete") {
-                    let indexAnimal
+                    let indexAnimal = -1
                     user.favourites.filter(function(animal, index) {
-                        if (animal._id === animalId)
+                        if (animal._id.equals(animalId))
                             indexAnimal = index
                     })
-                    if (indexAnimal > -1)
+                    if (indexAnimal > -1){
                         user.favourites.splice(indexAnimal, 1)
+                    }
                 } else {
                     user.favourites.push(animalId)
                 }
