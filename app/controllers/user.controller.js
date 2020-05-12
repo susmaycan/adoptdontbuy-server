@@ -70,7 +70,7 @@ module.exports = {
                 .populate('favourites')
                 .populate('adoptedByMe')
                 .then(user => {
-                    switch(req.query.type) {
+                    switch (req.query.type) {
                         case 'inAdoption':
                             res.send(user.inAdoption)
                             break
@@ -85,13 +85,13 @@ module.exports = {
                             break
                         case 'adoptedByMe':
                             res.send(user.adoptedByMe)
-                          break
+                            break
                         default:
                             res.send({
                                 "inAdoption": user.inAdoption,
                                 "favourites": user.favourites
                             })
-                      }
+                    }
                 })
                 .catch(err => {
                     res.status(500).send({
@@ -102,6 +102,55 @@ module.exports = {
             console.log("Some error occurred while retrieving animal's users: ", err.message)
             res.status(500).send(err);
         }
+    },
+
+    favourite: async (req, res) => {
+        let userId = req.params.userId
+        let animalId = req.params.animalId
+
+        await User.findById(userId)
+            .populate('inAdoption')
+            .populate('adoptedByOthers')
+            .populate('reserved')
+            .populate('favourites')
+            .populate('adoptedByMe')
+            .then(user => {
+                if (!user) {
+                    return res.status(404).send({
+                        message: "User not found"
+                    })
+                }
+                if (req.query.action === "delete") {
+                    let indexAnimal = -1
+                    user.favourites.filter(function(animal, index) {
+                        if (animal._id.equals(animalId))
+                            indexAnimal = index
+                    })
+                    if (indexAnimal > -1){
+                        user.favourites.splice(indexAnimal, 1)
+                    }
+                } else {
+                    user.favourites.push(animalId)
+                }
+
+                user.save()
+                    .then(data => {
+                        res.send(data)
+                    }).catch(err => {
+                    res.status(500).send({
+                        message: err.message || "Some error occurred while updating the user."
+                    })
+                })
+            }).catch(err => {
+                if (err.kind === 'ObjectId') {
+                    return res.status(404).send({
+                        message: "User not found with id " + userId
+                    })
+                }
+                return res.status(500).send({
+                    message: "Error retrieving user with id " + userId
+                })
+            })
     },
 
     animalsAdoptedByOthers: async (req, res) => {
@@ -140,6 +189,11 @@ module.exports = {
             id = req.params.userId;
         }
         await User.findById(id)
+            .populate('inAdoption')
+            .populate('adoptedByOthers')
+            .populate('reserved')
+            .populate('favourites')
+            .populate('adoptedByMe')
             .then(user => {
                 if (!user) {
                     return res.status(404).send({
@@ -205,7 +259,7 @@ module.exports = {
             favourites: req.body.favourites || [],
             reviews: req.body.reviews || []
 
-        }, { new: true })
+        }, {new: true})
             .then(user => {
                 if (!user) {
                     return res.status(404).send({
@@ -227,7 +281,7 @@ module.exports = {
 
     // Delete a user with the specified userId in the request
     delete: async (req, res) => {
-        var userToDelete = null;
+        let userToDelete = null;
 
         //We delete the user
         await User.findByIdAndDelete(req.params.userId)
@@ -238,7 +292,7 @@ module.exports = {
                     });
                 }
                 userToDelete = user;
-                res.send({ message: "User deleted successfully!" });
+                res.send({message: "User deleted successfully!"});
             }).catch(err => {
                 if (err.kind === 'ObjectId' || err.name === 'NotFound') {
                     return res.status(404).send({
