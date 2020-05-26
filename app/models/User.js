@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 const UserSchema = mongoose.Schema({
     _id: String,
@@ -43,6 +43,6 @@ const UserSchema = mongoose.Schema({
 }, {
     timestamps: true,
     _id: false
-});
+})
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('User', UserSchema)

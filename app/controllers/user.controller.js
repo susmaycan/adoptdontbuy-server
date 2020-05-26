@@ -1,5 +1,5 @@
-const User = require('../models/User.js');
-const Animal = require('../models/Animal.js');
+const User = require('../models/User.js')
+const Animal = require('../models/Animal.js')
 
 // Create and Save a new user
 module.exports = {
@@ -8,19 +8,19 @@ module.exports = {
         if (!req.body._id) {
             return res.status(400).send({
                 message: "User's _id can not be empty"
-            });
+            })
         }
 
         if (!req.body.email) {
             return res.status(400).send({
                 message: "User's email can not be empty"
-            });
+            })
         }
 
         if (!req.body.username) {
             return res.status(400).send({
                 message: "User's username can not be empty"
-            });
+            })
         }
 
 
@@ -48,7 +48,7 @@ module.exports = {
             favourites: req.body.favourites || [],
             reviews: req.body.reviews || []
 
-        });
+        })
 
         await user.save()
             .then(data => {
@@ -56,8 +56,8 @@ module.exports = {
             }).catch(err => {
                 res.status(500).send({
                     message: err.message || "Some error occurred while creating the user."
-                });
-            });
+                })
+            })
     },
 
     // Retrieve and return all users from the database.
@@ -96,11 +96,11 @@ module.exports = {
                 .catch(err => {
                     res.status(500).send({
                         message: err.message || "Some error occurred while animal's retrieving users."
-                    });
-                });
+                    })
+                })
         } catch (err) {
             console.log("Some error occurred while retrieving animal's users: ", err.message)
-            res.status(500).send(err);
+            res.status(500).send(err)
         }
     },
 
@@ -162,11 +162,11 @@ module.exports = {
                 .catch(err => {
                     res.status(500).send({
                         message: err.message || "Some error occurred while animal's retrieving users."
-                    });
-                });
+                    })
+                })
         } catch (err) {
             console.log("Some error occurred while retrieving animal's users: ", err.message)
-            res.status(500).send(err);
+            res.status(500).send(err)
         }
     },
 
@@ -174,19 +174,19 @@ module.exports = {
     findAll: async (req, res) => {
         await User.find()
             .then(users => {
-                res.send(users);
+                res.send(users)
             }).catch(err => {
                 res.status(500).send({
                     message: err.message || "Some error occurred while retrieving users."
-                });
-            });
+                })
+            })
     },
 
     // Find a single user with a userId
     findOne: async (req, res) => {
-        let id = req;
+        let id = req
         if (req.params !== undefined) {
-            id = req.params.userId;
+            id = req.params.userId
         }
         await User.findById(id)
             .populate('inAdoption')
@@ -199,19 +199,19 @@ module.exports = {
                 if (!user) {
                     return res.status(404).send({
                         message: "User not found with id " + id
-                    });
+                    })
                 }
-                res.send(user);
+                res.send(user)
             }).catch(err => {
                 if (err.kind === 'ObjectId') {
                     return res.status(404).send({
                         message: "User not found with id " + id
-                    });
+                    })
                 }
                 return res.status(500).send({
                     message: "Error retrieving user with id " + id
-                });
-            });
+                })
+            })
     },
 
     // Update a user identified by the userId in the request
@@ -220,19 +220,19 @@ module.exports = {
         if (!req.body._id) {
             return res.status(400).send({
                 message: "User's _id can not be empty"
-            });
+            })
         }
 
         if (!req.body.email) {
             return res.status(400).send({
                 message: "User's email can not be empty"
-            });
+            })
         }
 
         if (!req.body.username) {
             return res.status(400).send({
                 message: "User's username can not be empty"
-            });
+            })
         }
 
         // Find user and update it with the request body
@@ -265,24 +265,24 @@ module.exports = {
                 if (!user) {
                     return res.status(404).send({
                         message: "User not found with id " + req.params.userId
-                    });
+                    })
                 }
-                res.send(user);
+                res.send(user)
             }).catch(err => {
                 if (err.kind === 'ObjectId') {
                     return res.status(404).send({
                         message: "User not found with id " + req.params.userId
-                    });
+                    })
                 }
                 return res.status(500).send({
                     message: "Error updating user with id " + req.params.userId
-                });
-            });
+                })
+            })
     },
 
     // Delete a user with the specified userId in the request
     delete: async (req, res) => {
-        let userToDelete = null;
+        let userToDelete = null
 
         //We delete the user
         await User.findByIdAndDelete(req.params.userId)
@@ -290,44 +290,44 @@ module.exports = {
                 if (!user) {
                     return res.status(404).send({
                         message: "User not found with id " + req.params.userId
-                    });
+                    })
                 }
-                userToDelete = user;
-                res.send({message: "User deleted successfully!"});
+                userToDelete = user
+                res.send({message: "User deleted successfully!"})
             }).catch(err => {
                 if (err.kind === 'ObjectId' || err.name === 'NotFound') {
                     return res.status(404).send({
                         message: "User not found with id " + req.params.userId
-                    });
+                    })
                 }
-                console.log("Error in delete user: ", err.message);
+                console.log("Error in delete user: ", err.message)
                 return res.status(500).send({
                     message: "Could not delete user with id " + req.params.userId
-                });
-            });
+                })
+            })
 
         //We delete the user's animals if we deleted the user correctly
         if (res.statusCode === 200) {
             for (const animal of userToDelete.animals) {
-                const id = animal;
+                const id = animal
                 await Animal.findByIdAndRemove(id)
                     .then(animalToDelete => {
                         if (!animalToDelete) {
                             return res.status(404).send({
                                 message: "UserDetail not found with id " + id
-                            });
+                            })
                         }
                     }).catch(err => {
                         if (err.kind === 'ObjectId' || err.name === 'NotFound') {
                             return res.status(404).send({
                                 message: "UserDetail not found with id " + id
-                            });
+                            })
                         }
-                        console.log("Error in delete animal ", err.message);
+                        console.log("Error in delete animal ", err.message)
                         return res.status(500).send({
                             message: "Could not delete animal with id " + id
-                        });
-                    });
+                        })
+                    })
             }
         }
     }
