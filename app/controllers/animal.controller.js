@@ -84,7 +84,7 @@ module.exports = {
     },
 
     findOne: async (req, res) => {
-        await Animal.findById(req.params.animalId).populate('owner')
+        await Animal.findById(req.params.animalId).populate('owner', 'username email')
             .then(animal => {
                 if (!animal) {
                     return res.status(404).send({

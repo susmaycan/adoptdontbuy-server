@@ -194,7 +194,12 @@ module.exports = {
             .populate('reserved')
             .populate('favourites')
             .populate('adoptedByMe')
-            .populate('reviews')
+            .populate({
+                path : 'reviews',
+                populate : {
+                    path : 'from',
+                    select: 'username picture'
+                }})
             .then(user => {
                 if (!user) {
                     return res.status(404).send({
