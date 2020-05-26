@@ -194,6 +194,7 @@ module.exports = {
             .populate('reserved')
             .populate('favourites')
             .populate('adoptedByMe')
+            .populate('reviews')
             .then(user => {
                 if (!user) {
                     return res.status(404).send({
