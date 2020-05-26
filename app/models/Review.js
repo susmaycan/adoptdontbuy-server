@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 const ReviewSchema = mongoose.Schema({
     title: String,
@@ -14,6 +14,6 @@ const ReviewSchema = mongoose.Schema({
     },
 }, {
     timestamps: true
-});
+})
 
-module.exports = mongoose.model('Review', ReviewSchema);
+module.exports = mongoose.model('Review', ReviewSchema)
