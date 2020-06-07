@@ -40,14 +40,9 @@ module.exports = {
             last_name: req.body.last_name || "unknown",
             email: req.body.email,
             username: req.body.username,
-            inAdoption: req.body.inAdoption || [],
-            likedAnimals: req.body.likedAnimals || [],
-            adoptedByOthers: req.body.adoptedByOthers || [],
-            reserved: req.body.reserved || [],
-            adoptedByMe: req.body.adoptedByMe || [],
+            animals: req.body.animals || [],
             favourites: req.body.favourites || [],
             reviews: req.body.reviews || []
-
         })
 
         await user.save()
@@ -64,31 +59,19 @@ module.exports = {
     animalByUser: async (req, res) => {
         try {
             await User.findById(req.params.userId)
-                .populate('inAdoption')
-                .populate('adoptedByOthers')
-                .populate('reserved')
+                .populate('animals')
                 .populate('favourites')
-                .populate('adoptedByMe')
                 .then(user => {
                     switch (req.query.type) {
-                        case 'inAdoption':
-                            res.send(user.inAdoption)
-                            break
-                        case 'adoptedByOthers':
-                            res.send(user.adoptedByOthers)
-                            break
-                        case 'reserved':
-                            res.send(user.reserved)
+                        case 'animals':
+                            res.send(user.animals)
                             break
                         case 'favourites':
                             res.send(user.favourites)
                             break
-                        case 'adoptedByMe':
-                            res.send(user.adoptedByMe)
-                            break
                         default:
                             res.send({
-                                "inAdoption": user.inAdoption,
+                                "animals": user.animals,
                                 "favourites": user.favourites
                             })
                     }
@@ -109,11 +92,8 @@ module.exports = {
         let animalId = req.params.animalId
 
         await User.findById(userId)
-            .populate('inAdoption')
-            .populate('adoptedByOthers')
-            .populate('reserved')
+            .populate('animals')
             .populate('favourites')
-            .populate('adoptedByMe')
             .then(user => {
                 if (!user) {
                     return res.status(404).send({
@@ -189,11 +169,8 @@ module.exports = {
             id = req.params.userId
         }
         await User.findById(id)
-            .populate('inAdoption')
-            .populate('adoptedByOthers')
-            .populate('reserved')
+            .populate('animals')
             .populate('favourites')
-            .populate('adoptedByMe')
             .populate({
                 path : 'reviews',
                 populate : {
@@ -257,11 +234,7 @@ module.exports = {
             last_name: req.body.last_name || "unknown",
             email: req.body.email,
             username: req.body.username,
-            inAdoption: req.body.inAdoption || [],
-            likedAnimals: req.body.likedAnimals || [],
-            adoptedByOthers: req.body.adoptedByOthers || [],
-            reserved: req.body.reserved || [],
-            adoptedByMe: req.body.adoptedByMe || [],
+            animals: req.body.animals || [],
             favourites: req.body.favourites || [],
             reviews: req.body.reviews || []
 

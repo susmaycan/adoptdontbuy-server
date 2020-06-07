@@ -17,23 +17,11 @@ const UserSchema = mongoose.Schema({
     email: String,
     username: String,
 
-    inAdoption: [
-        { type: mongoose.Schema.Types.ObjectId, ref: 'Animal' }
-    ],
-
-    adoptedByOthers: [
-        { type: mongoose.Schema.Types.ObjectId, ref: 'Animal' }
-    ],
-
-    reserved: [
+    animals: [
         { type: mongoose.Schema.Types.ObjectId, ref: 'Animal' }
     ],
 
     favourites: [
-        { type: mongoose.Schema.Types.ObjectId, ref: 'Animal' }
-    ],
-
-    adoptedByMe: [
         { type: mongoose.Schema.Types.ObjectId, ref: 'Animal' }
     ],
 

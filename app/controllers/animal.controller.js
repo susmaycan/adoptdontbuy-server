@@ -45,10 +45,8 @@ module.exports = {
                                 message: "User not found with id " + id
                             })
                         }
-                        user.inAdoption.push(animal)
+                        user.animals.push(animal)
                         user.save()
-                        console.log("Data ", data)
-                        console.log("UserDetail ", animal)
                         res.send(data)
 
                     }).catch(err => {
@@ -113,31 +111,9 @@ module.exports = {
 
         console.log("GETTING ", req.body)
 
-        await Animal.findByIdAndUpdate(req.params.animalId, {
-            name: req.body.name,
-            specie: req.body.specie || "unknown",
-            breed: req.body.breed || "unknown",
-            gender: req.body.gender || "unknown",
-            size: req.body.size || "unknown",
-            yearBorn: req.body.yearBorn || "unknown",
-            age: req.body.age || "unknown",
-            country: req.body.country || "unknown",
-            region: req.body.region || "unknown",
-            province: req.body.province || "unknown",
-            city: req.body.city || "unknown",
-            picture: req.body.picture || [],
-            about: req.body.about || "unknown",
-            castrated: req.body.castrated || false,
-            vaccinated: req.body.vaccinated || false,
-            alongWithDogs: req.body.alongWithDogs || false,
-            alongWithCats: req.body.alongWithCats || false,
-            alongWithKids: req.body.alongWithKids || false,
-            socialLevel: req.body.socialLevel || 0,
-            traumaLevel: req.body.traumaLevel || 0,
-            energyLevel: req.body.energyLevel || 0,
-            owner: req.body.owner || "unknown",
-            status: req.body.status || "00"
-        }, { new: true })
+        await Animal.findByIdAndUpdate(req.params.animalId, req.body
+        , { new: true })
+            .populate('owner', 'username email')
             .then(animal => {
                 if (!animal) {
                     return res.status(404).send({
