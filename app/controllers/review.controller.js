@@ -19,7 +19,9 @@ module.exports = {
                         }
                         user.reviews.push(review)
                         user.save()
-                        res.send(review)
+                            .then(
+                                    res.send(review)
+                            )
                     }).catch(err => {
                     if (err.kind === 'ObjectId') {
                         return res.status(404).send({
@@ -72,7 +74,7 @@ module.exports = {
     },
 
     update: async (req, res) => {
-        await Review.findByIdAndUpdate(req.params.reviewId, req.body, { new: true })
+        await Review.findByIdAndUpdate(req.params.reviewId, req.body, {new: true})
             .then(review => {
                 if (!review) {
                     return res.status(404).send({
@@ -102,7 +104,7 @@ module.exports = {
                         message: "Review not found with id " + id
                     })
                 }
-                res.send({ message: "Review deleted successfully!" })
+                res.send({message: "Review deleted successfully!"})
 
             }).catch(err => {
                 if (err.kind === 'ObjectId' || err.name === 'NotFound') {

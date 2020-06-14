@@ -1,9 +1,8 @@
 const mongoose = require('mongoose')
 
 const ReviewSchema = mongoose.Schema({
-    title: String,
     desc: String,
-    ranking: Number,
+    rating: Number,
     from: {
         type: String,
         ref:'User'
