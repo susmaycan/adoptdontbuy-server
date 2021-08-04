@@ -1,6 +1,7 @@
 module.exports = {
     LITERALS: {
         UNKNOWN : 'unknown',
+        UNKNOWN_WEBSITE : 'https://www.unknown.es',
         EMPTY : '',
         DEFAULT_COUNTRY : 'Spain',
         ANIMAL : 'animal',
@@ -39,8 +40,24 @@ module.exports = {
             TO: 'to',
         },
         USER: {
-            USERNAME: 'username',
+            ID : '_id',
+            PHONE : 'phone',
+            PICTURE : 'picture',
+            IS_ANIMAL_SHELTER : 'animal_shelter',
+            WEBSITE : 'website',
+            ADDRESS_LINE : 'address_line',
+            COUNTRY : 'country',
+            REGION : 'region',
+            PROVINCE : 'province',
+            CITY : 'city',
+            DESCRIPTION : 'description',
+            FIST_NAME : 'first_name',
+            LAST_NAME : 'last_name',
             EMAIL: 'email',
+            USERNAME: 'username',
+            ANIMALS : 'animals',
+            FAVOURITES : 'favourites',
+            REVIEWS : 'reviews',
         },
     },
     ANIMAL_STATUS: {

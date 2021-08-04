@@ -5,45 +5,7 @@ const Animal = require('../models/Animal.js')
 module.exports = {
 
     create: async (req, res) => {
-        if (!req.body._id) {
-            return res.status(400).send({
-                message: "User's _id can not be empty"
-            })
-        }
-
-        if (!req.body.email) {
-            return res.status(400).send({
-                message: "User's email can not be empty"
-            })
-        }
-
-        if (!req.body.username) {
-            return res.status(400).send({
-                message: "User's username can not be empty"
-            })
-        }
-
-
-        const user = new User({
-            _id: req.body._id,
-            phone: req.body.phone || "unknown",
-            animal_shelter: req.body.animal_shelter || false,
-            website: req.body.website || "https://www.unknown.es",
-            address_line: req.body.address_line || "unknown",
-            country: req.body.country || "Spain",
-            region: req.body.region || "unknown",
-            province: req.body.province || "unknown",
-            city: req.body.city || "unknown",
-            picture: req.body.picture || "unknown",
-            description: req.body.description || "unknown",
-            first_name: req.body.first_name || "unknown",
-            last_name: req.body.last_name || "unknown",
-            email: req.body.email,
-            username: req.body.username,
-            animals: req.body.animals || [],
-            favourites: req.body.favourites || [],
-            reviews: req.body.reviews || []
-        })
+        const user = new User(req.body)
 
         await user.save()
             .then(data => {
