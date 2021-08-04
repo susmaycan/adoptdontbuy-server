@@ -53,34 +53,19 @@ module.exports = {
             if (findAnimal) res.send(animal)
             Helpers.sendAPIErrorMessage({ res: res, code: CODE_ERRORS.NOT_FOUND, message:`Animal with id ${animalId} not found.`})
         } catch (err) {
-            Helpers.sendAPIErrorMessage({ res: res, code: err.code, message:`Error retrieving the animal: ${err.message}`})
+            Helpers.sendAPIErrorMessage({ res: res, code: err.code, message:`Error updating the animal: ${err.message}`})
         }
     },
 
     delete: async (req, res) => {
-        let id = req.params.animalId
-
-        await Animal.findByIdAndDelete(id)
-            .then(animal => {
-                console.log(animal)
-                if (!animal) {
-                    return res.status(404).send({
-                        message: 'Animal not found with id ' + id
-                    })
-                }
-                res.send({ message: 'Animal deleted successfully!' })
-
-            }).catch(err => {
-                if (err.kind === 'ObjectId' || err.name === 'NotFound') {
-                    return res.status(404).send({
-                        message: "Animal not found with id " + id
-                    })
-                }
-                console.log("Error in delete animal ", err.message)
-                return res.status(500).send({
-                    message: "Could not delete animal with id " + id
-                })
-            })
+        try {
+            const { animalId } = req.params
+            const deletedAnimal = await Animal.findByIdAndDelete(animalId)
+            if (deletedAnimal) res.send('Animal deleted successfully.')
+            Helpers.sendAPIErrorMessage({ res: res, code: CODE_ERRORS.NOT_FOUND, message:`Animal with id ${animalId} not found.`})
+        } catch (err) {
+            Helpers.sendAPIErrorMessage({ res: res, code: err.code, message:`Error deleting the animal: ${err.message}`})
+        }
     },
 
     filter: async (req, res) => {
