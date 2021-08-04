@@ -69,69 +69,13 @@ module.exports = {
     },
 
     filter: async (req, res) => {
-        let query = {}
-
-        if (req.query.city !== undefined && req.query.city !== '' && req.query.city !== null) {
-            query.city = req.query.city
+        try {
+            let query = req.query
+            const animals =  await Animal.find({ ...query, status: ANIMAL_STATUS.IN_ADOPTION })
+                .sort({ 'updatedAt': QUERY.ORDER_DESC_BY_DATE })
+            res.send(animals)
+        } catch (err) {
+            Helpers.sendAPIErrorMessage({ res: res, code: err.code, message:`Error filtering the animals: ${err.message}`})
         }
-
-        if (req.query.province !== undefined && req.query.province !== '' && req.query.province !== null && req.query.province !== "-1") {
-            query.province = req.query.province
-        }
-
-        if (req.query.region !== undefined && req.query.region !== '' && req.query.region !== null && req.query.region !== "-1") {
-            query.region = req.query.region
-        }
-
-        if (req.query.size !== undefined && req.query.size !== '' && req.query.size !== null && req.query.size !== "-1") {
-            query.size = req.query.size
-        }
-
-        if (req.query.gender !== undefined && req.query.gender !== '' && req.query.gender !== null && req.query.gender !== "-1") {
-            query.gender = req.query.gender
-        }
-
-        if (req.query.specie !== undefined && req.query.specie !== '' && req.query.specie !== null && req.query.specie !== "-1") {
-            query.specie = req.query.specie
-        }
-
-        if (req.query.age !== undefined && req.query.age !== '' && req.query.age !== null && req.query.age !== "-1") {
-            query.age = req.query.age
-        }
-
-        if (req.query.castrated !== undefined && req.query.castrated !== '' && req.query.castrated !== null && req.query.castrated !== "-1") {
-            query.castrated = req.query.castrated
-        }
-
-        if (req.query.vaccinated !== undefined && req.query.vaccinated !== '' && req.query.vaccinated !== null && req.query.vaccinated !== "-1") {
-            query.vaccinated = req.query.vaccinated
-        }
-
-        if (req.query.alongWithDogs !== undefined && req.query.alongWithDogs !== '' && req.query.alongWithDogs !== null && req.query.alongWithDogs !== "-1") {
-            query.alongWithDogs = req.query.alongWithDogs
-        }
-
-        if (req.query.alongWithCats !== undefined && req.query.alongWithCats !== '' && req.query.alongWithCats !== null && req.query.alongWithCats !== "-1") {
-            query.alongWithCats = req.query.alongWithCats
-        }
-
-        if (req.query.alongWithKids !== undefined && req.query.alongWithKids !== '' && req.query.alongWithKids !== null && req.query.alongWithKids !== "-1") {
-            query.alongWithKids = req.query.alongWithKids
-        }
-        //TODO add birthdate and owner?
-
-
-        const ORDER_DESC_BY_DATE = -1
-
-        await Animal.find(query).sort({ 'updatedAt': ORDER_DESC_BY_DATE })
-            .then(animals => {
-                res.send(animals)
-            }).catch(err => {
-                res.status(500).send({
-                    message: err.message || "Some error occurred while retrieving animals."
-                })
-            })
-
-
     }
 }
