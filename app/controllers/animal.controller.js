@@ -9,32 +9,8 @@ module.exports = {
             })
         }
         const id = req.body.owner
-
-        const animal = new Animal({
-            name: req.body.name,
-            specie: req.body.specie || "unknown",
-            breed: req.body.breed || "unknown",
-            gender: req.body.gender || "unknown",
-            size: req.body.size || "unknown",
-            yearBorn: req.body.yearBorn || "unknown",
-            age: req.body.age || "unknown",
-            country: req.body.country || "Spain",
-            region: req.body.region || "unknown",
-            province: req.body.province || "unknown",
-            city: req.body.city || "unknown",
-            picture: req.body.picture || [],
-            about: req.body.about || "unknown",
-            castrated: req.body.castrated || false,
-            vaccinated: req.body.vaccinated || false,
-            alongWithDogs: req.body.alongWithDogs || false,
-            alongWithCats: req.body.alongWithCats || false,
-            alongWithKids: req.body.alongWithKids || false,
-            socialLevel: req.body.socialLevel || 0,
-            traumaLevel: req.body.traumaLevel || 0,
-            energyLevel: req.body.energyLevel || 0,
-            owner: id || "unknown",
-            status: req.body.status || "00"
-        })
+        const newAnimal = req.body
+        const animal = new Animal(newAnimal)
 
         await animal.save()
             .then(data => {
