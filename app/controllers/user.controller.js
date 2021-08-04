@@ -1,274 +1,138 @@
 const User = require('../models/User.js')
 const Animal = require('../models/Animal.js')
+const Helpers = require('../utils/functions')
+const { CODE_ERRORS, QUERY, MODEL } = require('../utils/const')
 
-// Create and Save a new user
 module.exports = {
-
     create: async (req, res) => {
         const user = new User(req.body)
-
-        await user.save()
-            .then(data => {
-                res.send(data)
-            }).catch(err => {
-                res.status(500).send({
-                    message: err.message || "Some error occurred while creating the user."
-                })
-            })
+        try {
+            let savedUser = await user.save()
+            res.send(savedUser)
+        } catch (err) {
+            Helpers.sendAPIErrorMessage({ res: res, code: err.code, message:`Error creating the user: ${err.message}`})
+        }
     },
 
-    // Retrieve and return all users from the database.
     animalByUser: async (req, res) => {
         try {
-            await User.findById(req.params.userId)
-                .populate('animals')
-                .populate('favourites')
-                .then(user => {
-                    switch (req.query.type) {
-                        case 'animals':
-                            res.send(user.animals)
-                            break
-                        case 'favourites':
-                            res.send(user.favourites)
-                            break
-                        default:
-                            res.send({
-                                "animals": user.animals,
-                                "favourites": user.favourites
-                            })
-                    }
+            const { userId } = req.params
+            const { type } = req.query
+            const findUser = await User.findById(userId)
+                .populate(MODEL.USER.ANIMALS)
+                .populate(MODEL.USER.FAVOURITES)
+            if (findUser) {
+                switch (type) {
+                    case QUERY.ANIMALS:
+                        res.send(user.animals)
+                        break
+                    case QUERY.FAVOURITES:
+                        res.send(user.favourites)
+                        break
+                    default:
+                        res.send({
+                            [QUERY.ANIMALS] : user.animals,
+                            [QUERY.FAVOURITES]: user.favourites
+                        })
+                }
+            } else {
+                Helpers.sendAPIErrorMessage({
+                    res: res,
+                    code: CODE_ERRORS.NOT_FOUND,
+                    message: `User with id ${userId} not found.`
                 })
-                .catch(err => {
-                    res.status(500).send({
-                        message: err.message || "Some error occurred while animal's retrieving users."
-                    })
-                })
+            }
         } catch (err) {
-            console.log("Some error occurred while retrieving animal's users: ", err.message)
-            res.status(500).send(err)
+            Helpers.sendAPIErrorMessage({ res: res, code: err.code, message:`Error retrieving the user: ${err.message}`})
         }
     },
 
     favourite: async (req, res) => {
-        let userId = req.params.userId
-        let animalId = req.params.animalId
-
-        await User.findById(userId)
-            .populate('animals')
-            .populate('favourites')
-            .then(user => {
-                if (!user) {
-                    return res.status(404).send({
-                        message: "User not found"
-                    })
-                }
-                if (req.query.action === "delete") {
-                    let indexAnimal = -1
-                    user.favourites.filter(function(animal, index) {
-                        if (animal._id.equals(animalId))
-                            indexAnimal = index
-                    })
+        try {
+            const { userId, animalId } = req.params
+            const { action } = req.query
+            const findUser = await User.findById(userId)
+                .populate(MODEL.USER.ANIMALS)
+                .populate(MODEL.USER.FAVOURITES)
+            if (findUser) {
+                if (action === QUERY.DELETE_FAVOURITE_ACTION) {
+                    let indexAnimal = findUser.favourites.indexOf((favouriteAnimal) => favouriteAnimal.id === animalId)
                     if (indexAnimal > -1){
-                        user.favourites.splice(indexAnimal, 1)
+                        findUser.favourites.splice(indexAnimal, 1)
                     }
                 } else {
-                    user.favourites.push(animalId)
+                    findUser.favourites.push(animalId)
                 }
 
-                user.save()
-                    .then(data => {
-                        res.send(data)
-                    }).catch(err => {
-                    res.status(500).send({
-                        message: err.message || "Some error occurred while updating the user."
-                    })
+                const savedUser = await findUser.save()
+                res.send(savedUser)
+
+            } else {
+                Helpers.sendAPIErrorMessage({
+                    res: res,
+                    code: CODE_ERRORS.NOT_FOUND,
+                    message: `User with id ${userId} not found.`
                 })
-            }).catch(err => {
-                if (err.kind === 'ObjectId') {
-                    return res.status(404).send({
-                        message: "User not found with id " + userId
-                    })
-                }
-                return res.status(500).send({
-                    message: "Error retrieving user with id " + userId
-                })
-            })
-    },
-
-    animalsAdoptedByOthers: async (req, res) => {
-        try {
-            await User.findById(req.params.userId).populate('adoptedByOthers')
-                .then(users => {
-                    res.send(users.animals)
-                })
-                .catch(err => {
-                    res.status(500).send({
-                        message: err.message || "Some error occurred while animal's retrieving users."
-                    })
-                })
-        } catch (err) {
-            console.log("Some error occurred while retrieving animal's users: ", err.message)
-            res.status(500).send(err)
-        }
-    },
-
-    // Retrieve and return all users from the database.
-    findAll: async (req, res) => {
-        await User.find()
-            .then(users => {
-                res.send(users)
-            }).catch(err => {
-                res.status(500).send({
-                    message: err.message || "Some error occurred while retrieving users."
-                })
-            })
-    },
-
-    // Find a single user with a userId
-    findOne: async (req, res) => {
-        let id = req
-        if (req.params !== undefined) {
-            id = req.params.userId
-        }
-        await User.findById(id)
-            .populate('animals')
-            .populate('favourites')
-            .populate({
-                path : 'reviews',
-                populate : {
-                    path : 'from',
-                    select: 'username picture'
-                }})
-            .then(user => {
-                if (!user) {
-                    return res.status(404).send({
-                        message: "User not found with id " + id
-                    })
-                }
-                res.send(user)
-            }).catch(err => {
-                if (err.kind === 'ObjectId') {
-                    return res.status(404).send({
-                        message: "User not found with id " + id
-                    })
-                }
-                return res.status(500).send({
-                    message: "Error retrieving user with id " + id
-                })
-            })
-    },
-
-    // Update a user identified by the userId in the request
-    update: async (req, res) => {
-        // Validate Request
-        if (!req.body._id) {
-            return res.status(400).send({
-                message: "User's _id can not be empty"
-            })
-        }
-
-        if (!req.body.email) {
-            return res.status(400).send({
-                message: "User's email can not be empty"
-            })
-        }
-
-        if (!req.body.username) {
-            return res.status(400).send({
-                message: "User's username can not be empty"
-            })
-        }
-
-        // Find user and update it with the request body
-        await User.findByIdAndUpdate(req.params.userId, {
-            _id: req.body._id,
-            phone: req.body.phone || "unknown",
-            animal_shelter: req.body.animal_shelter || false,
-            website: req.body.website || "unknown",
-            address_line: req.body.address_line || "unknown",
-            country: req.body.country || "Spain",
-            region: req.body.region || "unknown",
-            province: req.body.province || "unknown",
-            city: req.body.city || "unknown",
-            picture: req.body.picture || "unknown",
-            description: req.body.description || "unknown",
-            first_name: req.body.first_name || "unknown",
-            last_name: req.body.last_name || "unknown",
-            email: req.body.email,
-            username: req.body.username,
-            animals: req.body.animals || [],
-            favourites: req.body.favourites || [],
-            reviews: req.body.reviews || []
-
-        }, {new: true})
-            .then(user => {
-                if (!user) {
-                    return res.status(404).send({
-                        message: "User not found with id " + req.params.userId
-                    })
-                }
-                res.send(user)
-            }).catch(err => {
-                if (err.kind === 'ObjectId') {
-                    return res.status(404).send({
-                        message: "User not found with id " + req.params.userId
-                    })
-                }
-                return res.status(500).send({
-                    message: "Error updating user with id " + req.params.userId
-                })
-            })
-    },
-
-    // Delete a user with the specified userId in the request
-    delete: async (req, res) => {
-        let userToDelete = null
-
-        //We delete the user
-        await User.findByIdAndDelete(req.params.userId)
-            .then(user => {
-                if (!user) {
-                    return res.status(404).send({
-                        message: "User not found with id " + req.params.userId
-                    })
-                }
-                userToDelete = user
-                res.send({message: "User deleted successfully!"})
-            }).catch(err => {
-                if (err.kind === 'ObjectId' || err.name === 'NotFound') {
-                    return res.status(404).send({
-                        message: "User not found with id " + req.params.userId
-                    })
-                }
-                console.log("Error in delete user: ", err.message)
-                return res.status(500).send({
-                    message: "Could not delete user with id " + req.params.userId
-                })
-            })
-
-        //We delete the user's animals if we deleted the user correctly
-        if (res.statusCode === 200) {
-            for (const animal of userToDelete.animals) {
-                const id = animal
-                await Animal.findByIdAndRemove(id)
-                    .then(animalToDelete => {
-                        if (!animalToDelete) {
-                            return res.status(404).send({
-                                message: "UserDetail not found with id " + id
-                            })
-                        }
-                    }).catch(err => {
-                        if (err.kind === 'ObjectId' || err.name === 'NotFound') {
-                            return res.status(404).send({
-                                message: "UserDetail not found with id " + id
-                            })
-                        }
-                        console.log("Error in delete animal ", err.message)
-                        return res.status(500).send({
-                            message: "Could not delete animal with id " + id
-                        })
-                    })
             }
+        } catch (err) {
+            Helpers.sendAPIErrorMessage({ res: res, code: err.code, message:`Error adding/deleting favourites from user: ${err.message}`})
+        }
+    },
+
+    findAll: async (req, res) => {
+        try {
+            const users = await User.find()
+            res.send(users)
+        } catch (err) {
+            Helpers.sendAPIErrorMessage({ res: res, code: err.code, message:`Error retrieving the users: ${err.message}`})
+        }
+    },
+
+    findOne: async (req, res) => {
+        try {
+            const { userId } = req.params
+            const review = await User.findById(userId)
+                .populate(MODEL.USER.ANIMALS)
+                .populate(MODEL.USER.FAVOURITES)
+                .populate({
+                    path : MODEL.USER.REVIEWS,
+                    populate : {
+                        path : MODEL.REVIEW.FROM,
+                        select: `${MODEL.USER.USERNAME} ${MODEL.USER.PICTURE}`
+                    }})
+            if (review) res.send(review)
+            else Helpers.sendAPIErrorMessage({ res: res, code: CODE_ERRORS.NOT_FOUND, message:`User with id ${userId} not found.`})
+        } catch (err) {
+            Helpers.sendAPIErrorMessage({ res: res, code: err.code, message:`Error retrieving the user: ${err.message}`})
+        }
+    },
+
+    update: async (req, res) => {
+        try {
+            const { userId } = req.params
+            const { user } = req.body
+            const findUser = await User.findByIdAndUpdate(userId, user, { new: true })
+            if (findUser) res.send(findUser)
+            else Helpers.sendAPIErrorMessage({ res: res, code: CODE_ERRORS.NOT_FOUND, message:`User with id ${userId} not found.`})
+        } catch (err) {
+            Helpers.sendAPIErrorMessage({ res: res, code: err.code, message:`Error updating the user: ${err.message}`})
+        }
+    },
+
+    delete: async (req, res) => {
+        try {
+            const { userId } = req.params
+            const deletedUser = await User.findByIdAndDelete(userId)
+            if (deletedUser) {
+                for (const animalId of deletedUser.animals) {
+                    const deletedAnimal = await Animal.findByIdAndRemove(animalId)
+                    if (!deletedAnimal) Helpers.sendAPIErrorMessage({ res: res, code: CODE_ERRORS.NOT_FOUND, message:`Animal with id ${animalId} not found.`})
+                }
+                res.send('User deleted successfully.')
+            }
+            else Helpers.sendAPIErrorMessage({ res: res, code: CODE_ERRORS.NOT_FOUND, message:`User with id ${userId} not found.`})
+        } catch (err) {
+            Helpers.sendAPIErrorMessage({ res: res, code: err.code, message:`Error deleting the animal: ${err.message}`})
         }
     }
 }

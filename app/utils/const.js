@@ -70,5 +70,8 @@ module.exports = {
     QUERY: {
         ORDER_DESC_BY_DATE : -1,
         MAX_NUMBER_OF_ITEMS : 9,
+        ANIMALS : 'animals',
+        FAVOURITES : 'favourites',
+        DELETE_FAVOURITE_ACTION : 'delete',
     }
 }
