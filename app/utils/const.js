@@ -1,9 +1,11 @@
 module.exports = {
     LITERALS: {
         UNKNOWN : 'unknown',
+        EMPTY : '',
         DEFAULT_COUNTRY : 'Spain',
         ANIMAL : 'animal',
-        USER : 'user'
+        USER : 'user',
+        REVIEW : 'review',
     },
     MODEL: {
         ANIMAL: {
@@ -29,6 +31,12 @@ module.exports = {
             ENERGY_LEVEL: 'energyLevel',
             STATUS: 'status',
             OWNER: 'owner',
+        },
+        REVIEW: {
+            DESC: 'desc',
+            RATING: 'rating',
+            FROM: 'from',
+            TO: 'to',
         },
         USER: {
             USERNAME: 'username',
