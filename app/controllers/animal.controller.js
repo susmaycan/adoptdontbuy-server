@@ -1,60 +1,35 @@
 const Animal = require('../models/Animal.js')
 const User = require('../models/User.js')
+const Helpers = require('../utils/functions')
+const { CODE_ERRORS, FILTERS, ANIMAL_STATUS } = require('../utils/const')
+
 module.exports = {
 
     create: async (req, res) => {
-        if (!req.body.name) {
-            return res.status(400).send({
-                message: "UserDetail name can not be empty"
-            })
+        try {
+            const animal = new Animal(req.body)
+            const savedAnimal = await animal.save()
+            const owner = await User.findById(savedAnimal.owner)
+            if (owner) {
+                owner.animals.push(animal)
+                owner.save()
+                res.send(animal)
+            }
+            Helpers.sendAPIErrorMessage({ res: res, code: CODE_ERRORS.NOT_FOUND, message: `User not found with id ${animal.owner}`} )
+        } catch (err) {
+            Helpers.sendAPIErrorMessage({ res: res, code: err.code, message:`Error creating the animal: ${err.message}`})
         }
-        const id = req.body.owner
-        const newAnimal = req.body
-        const animal = new Animal(newAnimal)
-
-        await animal.save()
-            .then(data => {
-                User.findById(id)
-                    .then(user => {
-                        if (!user) {
-                            return res.status(404).send({
-                                message: "User not found with id " + id
-                            })
-                        }
-                        user.animals.push(animal)
-                        user.save()
-                        res.send(data)
-
-                    }).catch(err => {
-                        if (err.kind === 'ObjectId') {
-                            return res.status(404).send({
-                                message: "Object id error. User not found with id " + id
-                            })
-                        }
-                        return res.status(500).send({
-                            message: "Error retrieving user with id " +id
-                        })
-                    })
-            }).catch(err => {
-                res.status(500).send({
-                    message: err.message || "Some error occurred while creating the animal."
-                })
-            })
     },
 
     findAll: async (req, res) => {
-        const ORDER_DESC_BY_DATE = -1
-
-        await Animal.find({status:'00'})
-            .sort({ 'updatedAt': ORDER_DESC_BY_DATE })
-            .limit(9)
-            .then(animals => {
-                res.send(animals)
-            }).catch(err => {
-                res.status(500).send({
-                    message: err.message || "Some error occurred while retrieving animals."
-                })
-            })
+        try {
+            const animals = await Animal.find({status: ANIMAL_STATUS.IN_ADOPTION})
+                .sort({ 'updatedAt': FILTERS.ORDER_DESC_BY_DATE })
+                .limit(FILTERS.MAX_NUMBER_OF_ITEMS)
+            res.send(animals)
+        } catch (err) {
+            Helpers.sendAPIErrorMessage({ res: res, code: err.code, message:`Error retrieving the animals: ${err.message}`})
+        }
     },
 
     findOne: async (req, res) => {
