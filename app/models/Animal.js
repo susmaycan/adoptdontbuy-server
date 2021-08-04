@@ -113,7 +113,8 @@ const AnimalSchema = mongoose.Schema({
     },
     owner: {
         type: String,
-        ref: LITERALS.USER
+        ref: LITERALS.USER,
+        required: true
     }
 }, {
     timestamps: true,
