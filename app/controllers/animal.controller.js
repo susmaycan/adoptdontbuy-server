@@ -1,7 +1,7 @@
 const Animal = require('../models/Animal.js')
 const User = require('../models/User.js')
 const Helpers = require('../utils/functions')
-const { CODE_ERRORS, FILTERS, ANIMAL_STATUS } = require('../utils/const')
+const { CODE_ERRORS, QUERY, ANIMAL_STATUS, MODEL } = require('../utils/const')
 
 module.exports = {
 
@@ -24,8 +24,8 @@ module.exports = {
     findAll: async (req, res) => {
         try {
             const animals = await Animal.find({status: ANIMAL_STATUS.IN_ADOPTION})
-                .sort({ 'updatedAt': FILTERS.ORDER_DESC_BY_DATE })
-                .limit(FILTERS.MAX_NUMBER_OF_ITEMS)
+                .sort({ 'updatedAt': QUERY.ORDER_DESC_BY_DATE })
+                .limit(QUERY.MAX_NUMBER_OF_ITEMS)
             res.send(animals)
         } catch (err) {
             Helpers.sendAPIErrorMessage({ res: res, code: err.code, message:`Error retrieving the animals: ${err.message}`})
@@ -33,24 +33,15 @@ module.exports = {
     },
 
     findOne: async (req, res) => {
-        await Animal.findById(req.params.animalId).populate('owner', 'username email')
-            .then(animal => {
-                if (!animal) {
-                    return res.status(404).send({
-                        message: "Animal not found"
-                    })
-                }
-                res.send(animal)
-            }).catch(err => {
-                if (err.kind === 'ObjectId') {
-                    return res.status(404).send({
-                        message: "Animal not found"
-                    })
-                }
-                return res.status(500).send({
-                    message: "Error retrieving animal"
-                })
-            })
+        try {
+            const { animalId } = req.params
+            const animal = await Animal.findById(animalId).populate(MODEL.ANIMAL.OWNER, `${MODEL.USER.USERNAME} ${MODEL.USER.EMAIL}`)
+            if (animal) res.send(animal)
+            Helpers.sendAPIErrorMessage({ res: res, code: CODE_ERRORS.NOT_FOUND, message:`Animal with id ${animalId} not found.`})
+        } catch (err) {
+            Helpers.sendAPIErrorMessage({ res: res, code: err.code, message:`Error retrieving the animal: ${err.message}`})
+        }
+
     },
 
     update: async (req, res) => {
