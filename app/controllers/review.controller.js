@@ -1,122 +1,69 @@
 const Review = require('../models/Review.js')
 const User = require('../models/User')
+const Helpers = require('../utils/functions')
+const { CODE_ERRORS, QUERY, MODEL } = require('../utils/const')
 
 module.exports = {
 
     create: async (req, res) => {
-
-        const reviewToSave = new Review(req.body)
-
-        await reviewToSave.save()
-            .then(review => {
-                const userId = reviewToSave.to
-                User.findById(userId)
-                    .then(user => {
-                        if (!user) {
-                            return res.status(404).send({
-                                message: "User not found with id " + userId
-                            })
-                        }
-                        user.reviews.push(review)
-                        user.save()
-                            .then(
-                                    res.send(review)
-                            )
-                    }).catch(err => {
-                    if (err.kind === 'ObjectId') {
-                        return res.status(404).send({
-                            message: "Object id error. User not found with id " + userId
-                        })
-                    }
-                    return res.status(500).send({
-                        message: "Error retrieving user with id " + userId
-                    })
-                })
-            }).catch(err => {
-                res.status(500).send({
-                    message: err.message || "Some error occurred while creating the review."
-                })
-            })
+        try {
+            const reviewToSave = new Review(req.body)
+            const savedReview = await reviewToSave.save()
+            const user = await User.findById(savedReview.to)
+            if (user) {
+                user.reviews.push(savedReview)
+                await user.save()
+                res.send(savedReview)
+            } else {
+                Helpers.sendAPIErrorMessage({ res: res, code: CODE_ERRORS.NOT_FOUND, message: `User not found with id ${reviewToSave.to}`} )
+            }
+        } catch (err) {
+            Helpers.sendAPIErrorMessage({ res: res, code: err.code, message:`Error creating the review: ${err.message}`})
+        }
     },
 
     findAll: async (req, res) => {
-        await Review.find()
-            .then(reviews => {
-                res.send(reviews)
-            }).catch(err => {
-                res.status(500).send({
-                    message: err.message || "Some error occurred while retrieving reviews."
-                })
-            })
+        try {
+            const reviewList = await Review.find()
+                .sort({ 'updatedAt': QUERY.ORDER_DESC_BY_DATE })
+            res.send(reviewList)
+        } catch (err) {
+            Helpers.sendAPIErrorMessage({ res: res, code: err.code, message:`Error retrieving the reviews: ${err.message}`})
+        }
     },
 
     findOne: async (req, res) => {
-        await Review.findById(req.params.reviewId)
-            .populate('from')
-            .populate('to')
-            .then(review => {
-                if (!review) {
-                    return res.status(404).send({
-                        message: "Review not found with id " + req.params.reviewId
-                    })
-                }
-                res.send(review)
-            }).catch(err => {
-                if (err.kind === 'ObjectId') {
-                    return res.status(404).send({
-                        message: "Review not found with id " + req.params.reviewId
-                    })
-                }
-                return res.status(500).send({
-                    message: "Error retrieving review with id " + req.params.reviewId
-                })
-            })
+        try {
+            const { reviewId } = req.params
+            const review = await Review.findById(reviewId).populate(MODEL.REVIEW.TO).populate(MODEL.REVIEW.FROM)
+            if (review) res.send(review)
+            else Helpers.sendAPIErrorMessage({ res: res, code: CODE_ERRORS.NOT_FOUND, message:`Review with id ${animalId} not found.`})
+        } catch (err) {
+            Helpers.sendAPIErrorMessage({ res: res, code: err.code, message:`Error retrieving the review: ${err.message}`})
+        }
     },
 
     update: async (req, res) => {
-        await Review.findByIdAndUpdate(req.params.reviewId, req.body, {new: true})
-            .then(review => {
-                if (!review) {
-                    return res.status(404).send({
-                        message: "Review not found with id " + req.params.reviewId
-                    })
-                }
-                res.send(review)
-            }).catch(err => {
-                if (err.kind === 'ObjectId') {
-                    return res.status(404).send({
-                        message: "Review not found with id " + req.params.reviewId
-                    })
-                }
-                return res.status(500).send({
-                    message: "Error updating review with id " + req.params.reviewId
-                })
-            })
+        try {
+            const { reviewId } = req.params
+            const { review } = req.body
+            const findReview = await Review.findByIdAndUpdate(reviewId, review, { new: true })
+            if (findReview) res.send(findReview)
+            else Helpers.sendAPIErrorMessage({ res: res, code: CODE_ERRORS.NOT_FOUND, message:`Review with id ${reviewId} not found.`})
+        } catch (err) {
+            Helpers.sendAPIErrorMessage({ res: res, code: err.code, message:`Error updating the review: ${err.message}`})
+        }
     },
 
     delete: async (req, res) => {
-        var id = req.params.reviewId
-
-        await Review.findByIdAndDelete(id)
-            .then(review => {
-                if (!review) {
-                    return res.status(404).send({
-                        message: "Review not found with id " + id
-                    })
-                }
-                res.send({message: "Review deleted successfully!"})
-
-            }).catch(err => {
-                if (err.kind === 'ObjectId' || err.name === 'NotFound') {
-                    return res.status(404).send({
-                        message: "Review not found with id " + id
-                    })
-                }
-                console.log("Error in delete review ", err.message)
-                return res.status(500).send({
-                    message: "Could not delete review with id " + id
-                })
-            })
+        try {
+            const { reviewId } = req.params
+            const deletedReview = await Review.findByIdAndDelete(reviewId)
+            if (deletedReview) res.send('Review deleted successfully.')
+            else Helpers.sendAPIErrorMessage({ res: res, code: CODE_ERRORS.NOT_FOUND, message:`Review with id ${reviewId} not found.`})
+        } catch (err) {
+            Helpers.sendAPIErrorMessage({ res: res, code: err.code, message:`Error deleting the review: ${err.message}`})
+        }
     },
 
 }
