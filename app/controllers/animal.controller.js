@@ -14,8 +14,9 @@ module.exports = {
                 owner.animals.push(animal)
                 owner.save()
                 res.send(animal)
+            } else {
+                Helpers.sendAPIErrorMessage({ res: res, code: CODE_ERRORS.NOT_FOUND, message: `User not found with id ${animal.owner}`} )
             }
-            Helpers.sendAPIErrorMessage({ res: res, code: CODE_ERRORS.NOT_FOUND, message: `User not found with id ${animal.owner}`} )
         } catch (err) {
             Helpers.sendAPIErrorMessage({ res: res, code: err.code, message:`Error creating the animal: ${err.message}`})
         }
@@ -23,7 +24,7 @@ module.exports = {
 
     findAll: async (req, res) => {
         try {
-            const animals = await Animal.find({status: ANIMAL_STATUS.IN_ADOPTION})
+            const animals = await Animal.find({ [MODEL.ANIMAL.STATUS] : ANIMAL_STATUS.IN_ADOPTION})
                 .sort({ 'updatedAt': QUERY.ORDER_DESC_BY_DATE })
                 .limit(QUERY.MAX_NUMBER_OF_ITEMS)
             res.send(animals)
@@ -37,7 +38,7 @@ module.exports = {
             const { animalId } = req.params
             const animal = await Animal.findById(animalId).populate(MODEL.ANIMAL.OWNER, `${MODEL.USER.USERNAME} ${MODEL.USER.EMAIL}`)
             if (animal) res.send(animal)
-            Helpers.sendAPIErrorMessage({ res: res, code: CODE_ERRORS.NOT_FOUND, message:`Animal with id ${animalId} not found.`})
+            else Helpers.sendAPIErrorMessage({ res: res, code: CODE_ERRORS.NOT_FOUND, message:`Animal with id ${animalId} not found.`})
         } catch (err) {
             Helpers.sendAPIErrorMessage({ res: res, code: err.code, message:`Error retrieving the animal: ${err.message}`})
         }
@@ -51,7 +52,7 @@ module.exports = {
             const findAnimal = await Animal.findByIdAndUpdate(animalId, animal, { new: true })
                 .populate(MODEL.ANIMAL.OWNER, `${MODEL.USER.USERNAME} ${MODEL.USER.EMAIL}`)
             if (findAnimal) res.send(animal)
-            Helpers.sendAPIErrorMessage({ res: res, code: CODE_ERRORS.NOT_FOUND, message:`Animal with id ${animalId} not found.`})
+            else Helpers.sendAPIErrorMessage({ res: res, code: CODE_ERRORS.NOT_FOUND, message:`Animal with id ${animalId} not found.`})
         } catch (err) {
             Helpers.sendAPIErrorMessage({ res: res, code: err.code, message:`Error updating the animal: ${err.message}`})
         }
@@ -62,7 +63,7 @@ module.exports = {
             const { animalId } = req.params
             const deletedAnimal = await Animal.findByIdAndDelete(animalId)
             if (deletedAnimal) res.send('Animal deleted successfully.')
-            Helpers.sendAPIErrorMessage({ res: res, code: CODE_ERRORS.NOT_FOUND, message:`Animal with id ${animalId} not found.`})
+            else Helpers.sendAPIErrorMessage({ res: res, code: CODE_ERRORS.NOT_FOUND, message:`Animal with id ${animalId} not found.`})
         } catch (err) {
             Helpers.sendAPIErrorMessage({ res: res, code: err.code, message:`Error deleting the animal: ${err.message}`})
         }
@@ -71,7 +72,7 @@ module.exports = {
     filter: async (req, res) => {
         try {
             let query = req.query
-            const animals =  await Animal.find({ ...query, status: ANIMAL_STATUS.IN_ADOPTION })
+            const animals =  await Animal.find({ ...query, [MODEL.ANIMAL.STATUS] : ANIMAL_STATUS.IN_ADOPTION })
                 .sort({ 'updatedAt': QUERY.ORDER_DESC_BY_DATE })
             res.send(animals)
         } catch (err) {
