@@ -1,6 +1,5 @@
 module.exports = (app) => {
     const users = require('../controllers/user.controller.js')
-    const reviews = require('../controllers/review.controller')
 
     app.post('/user', users.create)
 
@@ -9,8 +8,6 @@ module.exports = (app) => {
     app.get('/user/:userId', users.findOne)
 
     app.get('/user/:userId/animal', users.animalByUser)
-
-    app.get('/user/:userId/review', reviews.findAll)
 
     app.put('/user/:userId', users.update)
 
