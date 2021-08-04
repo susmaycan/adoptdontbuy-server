@@ -45,35 +45,16 @@ module.exports = {
     },
 
     update: async (req, res) => {
-        if (!req.body.name) {
-            return res.status(400).send({
-                message: "UserDetail name can not be empty"
-            })
+        try {
+            const { animalId } = req.params
+            const { animal } = req.body
+            const findAnimal = await Animal.findByIdAndUpdate(animalId, animal, { new: true })
+                .populate(MODEL.ANIMAL.OWNER, `${MODEL.USER.USERNAME} ${MODEL.USER.EMAIL}`)
+            if (findAnimal) res.send(animal)
+            Helpers.sendAPIErrorMessage({ res: res, code: CODE_ERRORS.NOT_FOUND, message:`Animal with id ${animalId} not found.`})
+        } catch (err) {
+            Helpers.sendAPIErrorMessage({ res: res, code: err.code, message:`Error retrieving the animal: ${err.message}`})
         }
-
-        console.log("GETTING ", req.body)
-
-        await Animal.findByIdAndUpdate(req.params.animalId, req.body
-        , { new: true })
-            .populate('owner', 'username email')
-            .then(animal => {
-                if (!animal) {
-                    return res.status(404).send({
-                        message: "UserDetail not found with id " + req.params.animalId
-                    })
-                }
-                console.log("UPDATED ", animal)
-                res.send(animal)
-            }).catch(err => {
-                if (err.kind === 'ObjectId') {
-                    return res.status(404).send({
-                        message: "UserDetail not found with id " + req.params.animalId
-                    })
-                }
-                return res.status(500).send({
-                    message: "Error updating animal with id " + req.params.animalId
-                })
-            })
     },
 
     delete: async (req, res) => {
