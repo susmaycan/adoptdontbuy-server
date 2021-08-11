@@ -46,7 +46,7 @@ module.exports = {
     update: async (req, res) => {
         try {
             const { reviewId } = req.params
-            const { review } = req.body
+            const review = req.body
             const findReview = await Review.findByIdAndUpdate(reviewId, review, { new: true })
             if (findReview) res.send(findReview)
             else Helpers.sendAPIErrorMessage({ res: res, code: CODE_ERRORS.NOT_FOUND, message:`Review with id ${reviewId} not found.`})

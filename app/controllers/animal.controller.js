@@ -48,7 +48,7 @@ module.exports = {
     update: async (req, res) => {
         try {
             const { animalId } = req.params
-            const { animal } = req.body
+            const animal = req.body
             const findAnimal = await Animal.findByIdAndUpdate(animalId, animal, { new: true })
                 .populate(MODEL.ANIMAL.OWNER, `${MODEL.USER.USERNAME} ${MODEL.USER.EMAIL}`)
             if (findAnimal) res.send(animal)

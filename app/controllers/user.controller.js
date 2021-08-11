@@ -110,7 +110,7 @@ module.exports = {
     update: async (req, res) => {
         try {
             const { userId } = req.params
-            const { user } = req.body
+            const user = req.body
             const findUser = await User.findByIdAndUpdate(userId, user, { new: true })
             if (findUser) res.send(findUser)
             else Helpers.sendAPIErrorMessage({ res: res, code: CODE_ERRORS.NOT_FOUND, message:`User with id ${userId} not found.`})
